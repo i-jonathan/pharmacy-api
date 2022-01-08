@@ -11,7 +11,7 @@ import (
 func main() {
 	log.Println("starting server")
 	router := mux.NewRouter()
-	account.Router(router.PathPrefix("/account").SubRouter())
+	account.Router(router.PathPrefix("/account").Subrouter())
 
 	err := http.ListenAndServe(":9560", router)
 	if err != nil {

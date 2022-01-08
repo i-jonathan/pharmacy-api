@@ -14,12 +14,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitDatbase() *gorm.DB {
+func InitDatabase() *gorm.DB {
 	name := os.Getenv("database_name")
 	pass := os.Getenv("database_pass")
 	user := os.Getenv("database_user")
 	host := os.Getenv("database_host")
 	ssl := os.Getenv("databse_ssl")
+	port := os.Getenv("databse_port")
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 		host, port, user, name, pass, ssl)
@@ -28,7 +29,7 @@ func InitDatbase() *gorm.DB {
 
 	if err != nil {
 		log.Println("err")
-		return
+		return nil
 	}
 
 	err = db.AutoMigrate(&User{})
@@ -52,12 +53,12 @@ func generatePasswordHash(password string) (string, error) {
 		keyLen:  32,
 	}
 
-	hash := argon2.IDKey([]byte(password), salt, config.time, config.memory, config, threads, config.keyLen)
-	b64Salt := base64.RawStdEncoding(salt)
-	b64Hash := base64.RawStdEncoding(hash)
+	hash := argon2.IDKey([]byte(password), salt, config.time, config.memory, config.threads, config.keyLen)
+	b64Salt := base64.RawStdEncoding.EncodeToString(salt)
+	b64Hash := base64.RawStdEncoding.EncodeToString(hash)
 
 	format := "$argon2id$v=%d$m=%d,t=%d,p=%d$%s$%s"
-	full := fmt.Sprintf(format, argon2.version, config.memory, config.time, config.threads, b64Salt, b64Hash)
+	full := fmt.Sprintf(format, argon2.Version, config.memory, config.time, config.threads, b64Salt, b64Hash)
 
 	return full, nil
 }
@@ -81,6 +82,6 @@ func comparePassword(password, hash string) (bool, error) {
 	}
 
 	config.keyLen = uint32(len(hash))
-	comparinsonHash := argon2.IDKey([]byte(password), salt, config.time, config.memory, config.threads, config.keyLen)
-	return subtle.ConstantTimeCompare(decodedHash, comaprisonHash) == 1, nil
+	comparisonHash := argon2.IDKey([]byte(password), salt, config.time, config.memory, config.threads, config.keyLen)
+	return subtle.ConstantTimeCompare(decodedHash, comparisonHash) == 1, nil
 }

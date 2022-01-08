@@ -10,7 +10,7 @@ import (
 
 func getUser(r *http.Request, w http.ResponseWriter) {
 	var user User
-
+	db := InitDatabase()
 	params := mux.Vars(r)
 	username := params["username"]
 
@@ -28,7 +28,7 @@ func getUser(r *http.Request, w http.ResponseWriter) {
 func getAllUsers(r *http.Request, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	var users []User
-
+	db := InitDatabase()
 	db.Find(&users)
 
 	err := json.NewEncoder(w).Encode(users)
@@ -44,4 +44,20 @@ func getAllUsers(r *http.Request, w http.ResponseWriter) {
 	return
 }
 
-func
+func postUser(r *http.Request, w http.ResponseWriter) {
+	// TODO check user details
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if len(user.Password) < 8 {
+		return
+	}
+
+	// TODO hash password
+	// TODO save user
+}
