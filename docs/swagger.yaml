@@ -1,3 +1,24 @@
+definitions:
+  account.User:
+    properties:
+      created_at:
+        type: string
+      fullName:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      phone_number:
+        type: string
+      username:
+        type: string
+    type: object
+  core.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
 info:
   contact:
     email: farinloyejonathan@gmail.com
@@ -5,5 +26,68 @@ info:
   description: An API server for a not yet operational pharmacy
   title: Pharmacy First Steps
   version: "1.0"
-paths: {}
+paths:
+  /account:
+    post:
+      description: Create new user account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/account.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: ""
+      summary: Add user
+      tags:
+      - user
+  /account/{username}:
+    get:
+      description: Get user by Username
+      parameters:
+      - description: username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/account.User'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get user
+      tags:
+      - user
+  /account/all:
+    get:
+      description: Get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/account.User'
+            type: array
+        "204":
+          description: No Content
+          schema:
+            items:
+              $ref: '#/definitions/account.User'
+            type: array
+      summary: Get users
+      tags:
+      - user
 swagger: "2.0"
