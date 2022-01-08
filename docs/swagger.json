@@ -1,0 +1,13 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "An API server for a not yet operational pharmacy",
+        "title": "Pharmacy First Steps",
+        "contact": {
+            "name": "Jonathan Farinloye",
+            "email": "farinloyejonathan@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "paths": {}
+}

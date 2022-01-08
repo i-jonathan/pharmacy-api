@@ -1,14 +1,16 @@
 package account
 
 import (
+	"Pharmacy/core"
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
 
-func getUser(r *http.Request, w http.ResponseWriter) {
+func getUser(w http.ResponseWriter, r *http.Request) {
 	var user User
 	db := InitDatabase()
 	params := mux.Vars(r)
@@ -25,7 +27,7 @@ func getUser(r *http.Request, w http.ResponseWriter) {
 	return
 }
 
-func getAllUsers(r *http.Request, w http.ResponseWriter) {
+func getAllUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var users []User
 	db := InitDatabase()
@@ -44,9 +46,11 @@ func getAllUsers(r *http.Request, w http.ResponseWriter) {
 	return
 }
 
-func postUser(r *http.Request, w http.ResponseWriter) {
+func postUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
 	// TODO check user details
 	var user User
+	db := InitDatabase()
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		log.Println(err)
@@ -55,9 +59,24 @@ func postUser(r *http.Request, w http.ResponseWriter) {
 	}
 
 	if len(user.Password) < 8 {
+		message := core.ErrorResponse{Message: "Password length"}
+		_ = json.NewEncoder(w).Encode(message)
+		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
 
-	// TODO hash password
-	// TODO save user
+	// hash password
+	user.Password, err = generatePasswordHash(user.Password)
+	if err != nil {
+		log.Println(err)
+	}
+	user.Username = strings.ToLower(strings.ReplaceAll(user.FullName, " ", ""))
+	// save user
+	db.Create(&user)
+
+	err = json.NewEncoder(w).Encode(user)
+	if err != nil {
+		log.Println(err)
+	}
+	return
 }
