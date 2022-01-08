@@ -58,15 +58,24 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 func getAllUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var users []User
+	var count int64
 	db := InitDatabase()
-	db.Find(&users)
+	db.Scopes(core.Paginate(r)).Find(&users)
+	db.Model(&User{}).Count(&count)
 
 	if len(users) == 0 {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
-
-	err := json.NewEncoder(w).Encode(users)
+	page, prev, next := core.ResponseData(int(count), r)
+	response := core.Response{
+		Previous: prev,
+		Next:     next,
+		Page:     page,
+		Count:    count,
+		Data:     users,
+	}
+	err := json.NewEncoder(w).Encode(response)
 	if err != nil {
 		log.Println(err)
 	}
