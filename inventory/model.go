@@ -13,6 +13,7 @@ import (
 )
 
 type category struct {
+	ID          uint         `json:"id"`
 	Name        string       `json:"name"`
 	Description string       `json:"description"`
 	DateCreated time.Time    `json:"date_created"`
@@ -21,6 +22,7 @@ type category struct {
 }
 
 type product struct {
+	ID             uint            `json:"id"`
 	ItemName       string          `json:"name"`
 	BarCode        string          `json:"bar_code"`
 	Description    string          `json:description`

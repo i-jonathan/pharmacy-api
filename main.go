@@ -2,6 +2,7 @@ package main
 
 import (
 	"Pharmacy/account"
+	"Pharmacy/inventory"
 	"log"
 	"net/http"
 
@@ -22,6 +23,7 @@ func main() {
 	router.PathPrefix("/docs/").Handler(http.StripPrefix("/docs/", fs))
 
 	account.Router(router.PathPrefix("/account").Subrouter())
+	inventory.Router(router.PathPrefix("/inventory").Subrouter())
 
 	err := http.ListenAndServe(":9560", router)
 	if err != nil {
