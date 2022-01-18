@@ -64,10 +64,10 @@ definitions:
         type: string
       production_date:
         type: string
+      purchase_date:
+        type: string
       purchase_price:
         type: number
-      purchaseDate:
-        type: string
       quantity:
         type: integer
       quantity_sold:
@@ -185,6 +185,25 @@ paths:
       summary: Get item
       tags:
       - inventory
+  /inventory/add:
+    post:
+      consumes:
+      - application/json
+      description: Add a new item
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/inventory.product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Post Item
+      tags:
+      - inventory
   /inventory/all:
     get:
       description: Get all items in the inventory
@@ -210,6 +229,25 @@ paths:
                   $ref: '#/definitions/inventory.product'
               type: object
       summary: Get items
+      tags:
+      - inventory
+  /inventory/sell-item:
+    post:
+      consumes:
+      - application/json
+      description: Sell an Item
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/inventory.product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Sell Item
       tags:
       - inventory
 swagger: "2.0"

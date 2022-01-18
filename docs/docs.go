@@ -143,6 +143,35 @@ var doc = `{
                 }
             }
         },
+        "/inventory/add": {
+            "post": {
+                "description": "Add a new item",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inventory"
+                ],
+                "summary": "Post Item",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/inventory.product"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/inventory/all": {
             "get": {
                 "description": "Get all items in the inventory",
@@ -188,6 +217,35 @@ var doc = `{
                                     }
                                 }
                             ]
+                        }
+                    }
+                }
+            }
+        },
+        "/inventory/sell-item": {
+            "post": {
+                "description": "Sell an Item",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inventory"
+                ],
+                "summary": "Sell Item",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/inventory.product"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
                         }
                     }
                 }
@@ -329,7 +387,7 @@ var doc = `{
                 "production_date": {
                     "type": "string"
                 },
-                "purchaseDate": {
+                "purchase_date": {
                     "type": "string"
                 },
                 "purchase_price": {

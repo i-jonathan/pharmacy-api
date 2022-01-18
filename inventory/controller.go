@@ -139,7 +139,7 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 //@Accept json
 //@Produce json
 //@Success 200 {object} product
-//@Failure
+//@Failure 400 {object} core.ErrorResponse
 //@Router /inventory/sell-item [post]
 func sellItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
