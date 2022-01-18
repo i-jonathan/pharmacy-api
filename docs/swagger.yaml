@@ -19,6 +19,70 @@ definitions:
       message:
         type: string
     type: object
+  core.Response:
+    properties:
+      count:
+        type: integer
+      data: {}
+      next:
+        type: boolean
+      page:
+        type: integer
+      previous:
+        type: boolean
+    type: object
+  inventory.category:
+    properties:
+      created_by:
+        $ref: '#/definitions/account.User'
+      creator_id:
+        type: integer
+      date_created:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  inventory.product:
+    properties:
+      bar_code:
+        type: string
+      category:
+        $ref: '#/definitions/inventory.category'
+      category_id:
+        type: integer
+      description:
+        type: string
+      expiry_date:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      production_date:
+        type: string
+      purchase_price:
+        type: number
+      purchaseDate:
+        type: string
+      quantity:
+        type: integer
+      quantity_sold:
+        type: integer
+      reorder_level:
+        type: integer
+      selling_price:
+        type: number
+      sku:
+        type: string
+      user:
+        $ref: '#/definitions/account.User'
+      user_id:
+        type: integer
+    type: object
 info:
   contact:
     email: farinloyejonathan@gmail.com
@@ -29,6 +93,8 @@ info:
 paths:
   /account:
     post:
+      consumes:
+      - application/json
       description: Create new user account
       produces:
       - application/json
@@ -43,7 +109,7 @@ paths:
             $ref: '#/definitions/core.ErrorResponse'
         "500":
           description: ""
-      summary: Add user
+      summary: Set user
       tags:
       - user
   /account/{username}:
@@ -78,16 +144,72 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/account.User'
-            type: array
+            allOf:
+            - $ref: '#/definitions/core.Response'
+            - properties:
+                '[]data':
+                  $ref: '#/definitions/account.User'
+              type: object
         "204":
           description: No Content
           schema:
-            items:
-              $ref: '#/definitions/account.User'
-            type: array
+            allOf:
+            - $ref: '#/definitions/core.Response'
+            - properties:
+                '[]data':
+                  $ref: '#/definitions/account.User'
+              type: object
       summary: Get users
       tags:
       - user
+  /inventory/{id}:
+    get:
+      description: Get a single item by id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/inventory.product'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get item
+      tags:
+      - inventory
+  /inventory/all:
+    get:
+      description: Get all items in the inventory
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.Response'
+            - properties:
+                '[]data':
+                  $ref: '#/definitions/inventory.product'
+              type: object
+        "204":
+          description: No Content
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.Response'
+            - properties:
+                '[]data':
+                  $ref: '#/definitions/inventory.product'
+              type: object
+      summary: Get items
+      tags:
+      - inventory
 swagger: "2.0"

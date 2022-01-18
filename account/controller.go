@@ -16,10 +16,11 @@ import (
 //@Tags         user
 //@Produce      json
 //@Param        username  path      string  true  "username"
-//@Success      200       {object}  User
+//@Success      200  {object}  User
 //@Failure      404       {object}  core.ErrorResponse
 //@Router       /account/{username} [get]
 func getUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	var user User
 	db := InitDatabase()
 	params := mux.Vars(r)
@@ -43,7 +44,6 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 
 	// TODO log access
 	w.WriteHeader(http.StatusOK)
-	w.Header().Add("Content-Type", "application/json")
 	return
 }
 
@@ -52,9 +52,9 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 //@Description  Get all users
 //@Tags         user
 //@Produce      json
-//@Success      200       {array}  User
-//@Success	204 {array} User
-//@Router /account/all [get]
+//@Success      200  {object}  core.Response{[]data=User}
+//@Success      204  {object}  core.Response{[]data=User}
+//@Router       /account/all [get]
 func getAllUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var users []User
@@ -84,17 +84,18 @@ func getAllUsers(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-//Add User
-//@Summary      Add user
+//Set User
+//@Summary      Set user
 //@Description  Create new user account
 //@Tags         user
+//@Accept       json
 //@Produce      json
 //@Success      200       {object}  User
-//@Failure 400 {object} core.ErrorResponse
-//@Failure 500
-//@Router /account [post]
+//@Failure      400  {object}  core.ErrorResponse
+//@Failure      500
+//@Router       /account [post]
 func postUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json")
 	// TODO check user details
 	var user User
 	db := InitDatabase()

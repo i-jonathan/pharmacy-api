@@ -29,13 +29,16 @@ var doc = `{
         "/account": {
             "post": {
                 "description": "Create new user account",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "user"
                 ],
-                "summary": "Add user",
+                "summary": "Set user",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -69,19 +72,37 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/account.User"
-                            }
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "[]data": {
+                                            "$ref": "#/definitions/account.User"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/account.User"
-                            }
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "[]data": {
+                                            "$ref": "#/definitions/account.User"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -111,6 +132,91 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/account.User"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/inventory/all": {
+            "get": {
+                "description": "Get all items in the inventory",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inventory"
+                ],
+                "summary": "Get items",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "[]data": {
+                                            "$ref": "#/definitions/inventory.product"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "[]data": {
+                                            "$ref": "#/definitions/inventory.product"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/inventory/{id}": {
+            "get": {
+                "description": "Get a single item by id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inventory"
+                ],
+                "summary": "Get item",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/inventory.product"
                         }
                     },
                     "404": {
@@ -152,6 +258,103 @@ var doc = `{
             "properties": {
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "core.Response": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "data": {},
+                "next": {
+                    "type": "boolean"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "previous": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "inventory.category": {
+            "type": "object",
+            "properties": {
+                "created_by": {
+                    "$ref": "#/definitions/account.User"
+                },
+                "creator_id": {
+                    "type": "integer"
+                },
+                "date_created": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "inventory.product": {
+            "type": "object",
+            "properties": {
+                "bar_code": {
+                    "type": "string"
+                },
+                "category": {
+                    "$ref": "#/definitions/inventory.category"
+                },
+                "category_id": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "expiry_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "production_date": {
+                    "type": "string"
+                },
+                "purchaseDate": {
+                    "type": "string"
+                },
+                "purchase_price": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "quantity_sold": {
+                    "type": "integer"
+                },
+                "reorder_level": {
+                    "type": "integer"
+                },
+                "selling_price": {
+                    "type": "number"
+                },
+                "sku": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/account.User"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         }
