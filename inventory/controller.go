@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/shopspring/decimal"
 	"gorm.io/gorm/clause"
 )
 
@@ -116,7 +117,7 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if item.PurchasePrice == 0 || item.SellingPrice == 0 {
+	if item.PurchasePrice == decimal.NewFromInt(0) || item.SellingPrice == decimal.NewFromInt(0) {
 		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(core.ErrorResponse{Message: "Price can not be Zero (0)"})
 		return
@@ -124,9 +125,10 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 
 	// TODO generate SKU
 
-	// create and save item into db
+	// create and save item into db\
+	db := initDatabase()
 	db.Create(&item)
-	err = json.NewEncoder(w).Encoder(item)
+	err = json.NewEncoder(w).Encode(item)
 	return
 }
 
@@ -141,6 +143,6 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 //@Router /inventory/sell-item [post]
 func sellItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var item product
+	// var item product
 
 }

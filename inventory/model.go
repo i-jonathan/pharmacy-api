@@ -25,11 +25,11 @@ type product struct {
 	ID             uint            `json:"id"`
 	ItemName       string          `json:"name"`
 	BarCode        string          `json:"bar_code"`
-	Description    string          `json:description`
+	Description    string          `json:"description"`
 	Category       category        `json:"category"`
 	CategoryID     int             `json:"category_id"`
 	ExpiryDate     time.Time       `json:"expiry_date"`
-	PurchaseDate   time.Time       `json"purchase_date"`
+	PurchaseDate   time.Time       `json:"purchase_date"`
 	ProductionDate time.Time       `json:"production_date"`
 	Quantity       int             `json:"quantity"`
 	PurchasePrice  decimal.Decimal `json:"purchase_price"`
