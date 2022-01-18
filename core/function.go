@@ -1,6 +1,7 @@
 package core
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -37,7 +38,7 @@ func ResponseData(count int, r *http.Request) (int, bool, bool) {
 		} else {
 			page, err = strconv.Atoi(r.URL.Query().Get("page"))
 			if err != nil {
-				log.ErrorHandler(err)
+				log.Println(err)
 			}
 		}
 		if r.URL.Query().Get("page_size") == "" {
@@ -48,7 +49,7 @@ func ResponseData(count int, r *http.Request) (int, bool, bool) {
 				pageSize = 50
 			}
 			if err != nil {
-				log.ErrorHandler(err)
+				log.Println(err)
 			}
 		}
 
