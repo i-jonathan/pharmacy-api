@@ -12,6 +12,8 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+var db = core.GetDB()
+
 //Get all Items
 //@Summary      Get items
 //@Description  Get all items in the inventory
@@ -24,7 +26,6 @@ func getAllItems(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var products []product
 	var count int64
-	db := initDatabase()
 	db.Model(&product{}).Count(&count)
 	db.Scopes(core.Paginate(r)).Preload(clause.Associations).Find(&products)
 
@@ -71,7 +72,6 @@ func getItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var item product
-	db := initDatabase()
 	db.Preload(clause.Associations).Find(&item, "id = ?", itemId)
 
 	if item.ItemName == "" {
@@ -126,7 +126,6 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 	// TODO generate SKU
 
 	// create and save item into db\
-	db := initDatabase()
 	db.Create(&item)
 	err = json.NewEncoder(w).Encode(item)
 	return

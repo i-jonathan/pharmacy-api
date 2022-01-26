@@ -1,45 +1,48 @@
 package account
 
 import (
+	"Pharmacy/core"
 	"crypto/rand"
 	"crypto/subtle"
 	"encoding/base64"
 	"fmt"
-	"log"
-	"os"
 	"strings"
 
 	"golang.org/x/crypto/argon2"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
-func InitDatabase() *gorm.DB {
-	name := os.Getenv("database_name")
-	pass := os.Getenv("database_pass")
-	user := os.Getenv("database_user")
-	host := os.Getenv("database_host")
-	ssl := os.Getenv("databse_ssl")
-	port := os.Getenv("databse_port")
+//func InitDatabase() *gorm.DB {
+//	name := os.Getenv("database_name")
+//	pass := os.Getenv("database_pass")
+//	user := os.Getenv("database_user")
+//	host := os.Getenv("database_host")
+//	ssl := os.Getenv("databse_ssl")
+//	port := os.Getenv("databse_port")
+//
+//	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
+//		host, port, user, name, pass, ssl)
+//
+//	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+//
+//	if err != nil {
+//		log.Println("err")
+//		return nil
+//	}
+//
+//	err = db.AutoMigrate(&User{})
+//	if err != nil {
+//		log.Println(err)
+//	}
+//
+//	return db
+//}
 
-	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
-		host, port, user, name, pass, ssl)
-
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
-	if err != nil {
-		log.Println("err")
-		return nil
-	}
-
-	err = db.AutoMigrate(&User{})
-	if err != nil {
-		log.Println(err)
-	}
-
-	return db
+// Register models for auto migration
+func init() {
+	core.RegisterModel(&User{})
 }
 
+// generate hashed and salted form of entered string/password. Return error if any.
 func generatePasswordHash(password string) (string, error) {
 	salt := make([]byte, 16)
 	if _, err := rand.Read(salt); err != nil {
@@ -63,6 +66,7 @@ func generatePasswordHash(password string) (string, error) {
 	return full, nil
 }
 
+// compare entered password with stored password to check correctness of password
 func comparePassword(password, hash string) (bool, error) {
 	parts := strings.Split(hash, "$")
 	config := &passwordConfig{}

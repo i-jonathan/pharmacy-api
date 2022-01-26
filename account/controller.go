@@ -10,6 +10,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var db = core.GetDB()
+
 //Get User
 //@Summary      Get user
 //@Description  Get user by Username
@@ -22,7 +24,6 @@ import (
 func getUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var user User
-	db := InitDatabase()
 	params := mux.Vars(r)
 	username := params["username"]
 
@@ -59,7 +60,6 @@ func getAllUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var users []User
 	var count int64
-	db := InitDatabase()
 	db.Scopes(core.Paginate(r)).Find(&users)
 	db.Model(&User{}).Count(&count)
 
@@ -98,7 +98,6 @@ func postUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	// TODO check user details
 	var user User
-	db := InitDatabase()
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		log.Println(err)
