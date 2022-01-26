@@ -90,6 +90,7 @@ func getItem(w http.ResponseWriter, r *http.Request) {
 //@Summary Post Item
 //@Description Add a new item
 //@Tags inventory
+//@Param addItem body product true "add item"
 //@Accept json
 //@Produce json
 //@Success 200 {object} product
@@ -135,6 +136,7 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 //@Summary Sell Item
 //@Description Sell an Item
 //@Tags inventory
+//@Param saleItem body saleData true "Sell item"
 //@Accept json
 //@Produce json
 //@Success 200 {object} product
@@ -142,6 +144,34 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 //@Router /inventory/sell-item [post]
 func sellItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	// var item product
+	var item product
+	var saleDetail saleData
 
+	err := json.NewDecoder(r.Body).Decode(&saleDetail)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		_ = json.NewEncoder(w).Encode(core.ErrorResponse{Message: "Can't read data"})
+		return
+	}
+
+	// Fetch product by bar code
+	db.Find(&item, "bar_code = ?", saleDetail.BarCode)
+
+	// Check if available quantity is less than requested quantity
+	if item.Quantity < saleDetail.Quantity {
+		w.WriteHeader(http.StatusBadRequest)
+		_ = json.NewEncoder(w).Encode(core.ErrorResponse{Message: "Requested number is more than available quantity"})
+		// TODO send low quantity notification
+		return
+	}
+
+	// Reduce product quantity in db and save
+	item.Quantity -= saleDetail.Quantity
+	db.Save(&item)
+
+	err = json.NewEncoder(w).Encode(item)
+	if err != nil {
+		log.Println(err)
+	}
 }

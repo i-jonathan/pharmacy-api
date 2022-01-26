@@ -13,8 +13,8 @@ type category struct {
 	Name        string       `json:"name"`
 	Description string       `json:"description"`
 	DateCreated time.Time    `json:"date_created"`
-	Creator     account.User `json:"created_by"`
-	CreatorID   int          `json:"creator_id"`
+	Creator     account.User `json:"created_by,-"`
+	CreatorID   int          `json:"creator_id,-"`
 }
 
 type product struct {
