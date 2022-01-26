@@ -156,6 +156,17 @@ var doc = `{
                     "inventory"
                 ],
                 "summary": "Post Item",
+                "parameters": [
+                    {
+                        "description": "add item",
+                        "name": "addItem",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/inventory.product"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -235,6 +246,17 @@ var doc = `{
                     "inventory"
                 ],
                 "summary": "Sell Item",
+                "parameters": [
+                    {
+                        "description": "Sell item",
+                        "name": "saleItem",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/inventory.saleData"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -413,6 +435,23 @@ var doc = `{
                 },
                 "user_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "inventory.saleData": {
+            "type": "object",
+            "properties": {
+                "bar_code": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "sku": {
+                    "type": "string"
                 }
             }
         }

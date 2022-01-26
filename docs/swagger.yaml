@@ -83,6 +83,17 @@ definitions:
       user_id:
         type: integer
     type: object
+  inventory.saleData:
+    properties:
+      bar_code:
+        type: string
+      id:
+        type: integer
+      quantity:
+        type: integer
+      sku:
+        type: string
+    type: object
 info:
   contact:
     email: farinloyejonathan@gmail.com
@@ -190,6 +201,13 @@ paths:
       consumes:
       - application/json
       description: Add a new item
+      parameters:
+      - description: add item
+        in: body
+        name: addItem
+        required: true
+        schema:
+          $ref: '#/definitions/inventory.product'
       produces:
       - application/json
       responses:
@@ -236,6 +254,13 @@ paths:
       consumes:
       - application/json
       description: Sell an Item
+      parameters:
+      - description: Sell item
+        in: body
+        name: saleItem
+        required: true
+        schema:
+          $ref: '#/definitions/inventory.saleData'
       produces:
       - application/json
       responses:
