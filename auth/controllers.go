@@ -32,6 +32,16 @@ func init() {
 	})
 }
 
+//Login
+//@Summary Login
+//@Description Log users in
+//@Tags auth
+//@Accept json
+//@Produce json
+//@Success 200
+//@Failure 400 {object} core.ErrorResponse
+//@Failure 401 {object} core.ErrorResponse
+//@Router /auth/login [post]
 func login(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "chocolate_chip")
 	// authenticate user
@@ -45,11 +55,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println(err)
+		_ = json.NewEncoder(w).Encode(core.ErrorResponse{Message: "Check message body"})
 		return
 	}
 
 	if cred.Email == "" || cred.Password == "" {
 		w.WriteHeader(http.StatusBadRequest)
+		_ = json.NewEncoder(w).Encode(core.ErrorResponse{Message: "Email or Password can't be empty"})
 		return
 	}
 
@@ -76,6 +88,12 @@ func login(w http.ResponseWriter, r *http.Request) {
 	session.Save(r, w)
 }
 
+//Logout
+//@Summary Logout
+//@Description Log users out
+//@Tags auth
+//@Success 200
+//@Router /auth/logout [post]
 func logout(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "chocolate_chip")
 

@@ -173,6 +173,36 @@ paths:
       summary: Get users
       tags:
       - user
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Log users in
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Login
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      description: Log users out
+      responses:
+        "200":
+          description: ""
+      summary: Logout
+      tags:
+      - auth
   /inventory/{id}:
     get:
       description: Get a single item by id
