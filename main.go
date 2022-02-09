@@ -2,6 +2,7 @@ package main
 
 import (
 	"Pharmacy/account"
+	"Pharmacy/auth"
 	"Pharmacy/inventory"
 	"log"
 	"net/http"
@@ -24,7 +25,7 @@ func main() {
 
 	account.Router(router.PathPrefix("/account").Subrouter())
 	inventory.Router(router.PathPrefix("/inventory").Subrouter())
-
+	auth.Router(router.PathPrefix("/auth").Subrouter())
 	err := http.ListenAndServe(":9560", router)
 	if err != nil {
 		log.Println(err)
