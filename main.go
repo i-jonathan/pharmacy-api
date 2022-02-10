@@ -18,7 +18,7 @@ import (
 func main() {
 	log.Println("starting server")
 	router := mux.NewRouter()
-
+	router.Use(loggingMiddleware)
 	// documentation
 	fs := http.FileServer(http.Dir("./docs"))
 	router.PathPrefix("/docs/").Handler(http.StripPrefix("/docs/", fs))
