@@ -1,20 +1,28 @@
 package auth
 
 import (
+	"Pharmacy/account"
 	"Pharmacy/core"
 	"context"
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/sessions"
-	"github.com/rbcervilla/redisstore"
+	"github.com/rbcervilla/redisstore/v8"
 )
 
 var (
 	client = core.GetRedisDB()
 	store  *redisstore.RedisStore
+	db     = core.GetDB()
 )
+
+type credentials struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
 
 func init() {
 	var err error
@@ -33,23 +41,20 @@ func init() {
 }
 
 //Login
-//@Summary Login
-//@Description Log users in
-//@Tags auth
-//@Accept json
-//@Produce json
-//@Success 200
-//@Failure 400 {object} core.ErrorResponse
-//@Failure 401 {object} core.ErrorResponse
-//@Router /auth/login [post]
+//@Summary      Login
+//@Description  Log users in
+//@Tags         auth
+//@Accept       json
+//@Param        login  body  credentials  true  "login"
+//@Produce      json
+//@Success      200
+//@Failure      400  {object}  core.ErrorResponse
+//@Failure      401  {object}  core.ErrorResponse
+//@Router       /auth/login [post]
 func login(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "chocolate_chip")
 	// authenticate user
 
-	type credentials struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
 	var cred credentials
 	err := json.NewDecoder(r.Body).Decode(&cred)
 	if err != nil {
@@ -66,7 +71,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user account.User
-	db.Find(&user, "email = ?", strins.ToLower(cred.Email))
+	db.Find(&user, "email = ?", strings.ToLower(cred.Email))
 
 	// Verify tat password is correct
 	expectedPass := user.Password
@@ -89,11 +94,11 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 //Logout
-//@Summary Logout
-//@Description Log users out
-//@Tags auth
-//@Success 200
-//@Router /auth/logout [post]
+//@Summary      Logout
+//@Description  Log users out
+//@Tags         auth
+//@Success      200
+//@Router       /auth/logout [post]
 func logout(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "chocolate_chip")
 

@@ -39,6 +39,17 @@ var doc = `{
                     "user"
                 ],
                 "summary": "Set user",
+                "parameters": [
+                    {
+                        "description": "add user",
+                        "name": "postUser",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/account.User"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -156,6 +167,17 @@ var doc = `{
                     "auth"
                 ],
                 "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "login",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.credentials"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": ""
@@ -362,6 +384,9 @@ var doc = `{
                 "created_at": {
                     "type": "string"
                 },
+                "email": {
+                    "type": "string"
+                },
                 "fullName": {
                     "type": "string"
                 },
@@ -375,6 +400,17 @@ var doc = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.credentials": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }

@@ -3,6 +3,8 @@ definitions:
     properties:
       created_at:
         type: string
+      email:
+        type: string
       fullName:
         type: string
       id:
@@ -12,6 +14,13 @@ definitions:
       phone_number:
         type: string
       username:
+        type: string
+    type: object
+  auth.credentials:
+    properties:
+      email:
+        type: string
+      password:
         type: string
     type: object
   core.ErrorResponse:
@@ -107,6 +116,13 @@ paths:
       consumes:
       - application/json
       description: Create new user account
+      parameters:
+      - description: add user
+        in: body
+        name: postUser
+        required: true
+        schema:
+          $ref: '#/definitions/account.User'
       produces:
       - application/json
       responses:
@@ -178,6 +194,13 @@ paths:
       consumes:
       - application/json
       description: Log users in
+      parameters:
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/auth.credentials'
       produces:
       - application/json
       responses:
