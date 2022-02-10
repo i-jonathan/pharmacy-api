@@ -24,9 +24,9 @@ type product struct {
 	Description    string          `json:"description"`
 	Category       category        `json:"category"`
 	CategoryID     int             `json:"category_id"`
-	ExpiryDate     time.Time       `json:"expiry_date"`
-	PurchaseDate   time.Time       `json:"purchase_date"`
-	ProductionDate time.Time       `json:"production_date"`
+	ExpiryDate     string          `json:"expiry_date"`
+	PurchaseDate   string          `json:"purchase_date"`
+	ProductionDate string          `json:"production_date"`
 	Quantity       uint            `json:"quantity"`
 	PurchasePrice  decimal.Decimal `json:"purchase_price"`
 	SellingPrice   decimal.Decimal `json:"selling_price"`

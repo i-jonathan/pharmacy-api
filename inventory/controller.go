@@ -1,6 +1,7 @@
 package inventory
 
 import (
+	"Pharmacy/account"
 	"Pharmacy/core"
 	"encoding/json"
 	"log"
@@ -20,7 +21,6 @@ var db = core.GetDB()
 //@Tags         inventory
 //@Produce      json
 //@Success      200  {object}  core.Response{[]data=product}
-//@Success      204  {object}  core.Response{[]data=product}
 //@Router       /inventory/all [get]
 func getAllItems(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -99,6 +99,8 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//TODO needs logged in User
+	var user account.User
+	db.Find(&user, "email = ?", "farinloyejonathan@gmail.com")
 
 	if item.ItemName == "" || item.BarCode == "" || item.Description == "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -106,11 +108,16 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if item.ExpiryDate.IsZero() || item.PurchaseDate.IsZero() || item.ProductionDate.IsZero() {
-		w.WriteHeader(http.StatusBadRequest)
-		_ = json.NewEncoder(w).Encode(core.ErrorResponse{Message: "Expiry, Purchase or Production Date can not be empty."})
-		return
-	}
+	//	dateLayout := "2006-01-02"
+	//	item.ExpiryDate = time.Parse(dateLayout, item.ExpiryDate)
+	//	item.PurchaseDate = time.Parse(dateLayout, item.PurchaseDate)
+	//	item.ProductionDate = time.Parse(dateLayout, item.ProductionDate)
+	//
+	//	if item.ExpiryDate.IsZero() || item.PurchaseDate.IsZero() || item.ProductionDate.IsZero() {
+	//		w.WriteHeader(http.StatusBadRequest)
+	//		_ = json.NewEncoder(w).Encode(core.ErrorResponse{Message: "Expiry, Purchase or Production Date can not be empty."})
+	//		return
+	//	}
 
 	if item.PurchasePrice == decimal.NewFromInt(0) || item.SellingPrice == decimal.NewFromInt(0) {
 		w.WriteHeader(http.StatusBadRequest)
@@ -118,6 +125,8 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	item.Category.Creator = user
+	item.User = user
 	// TODO generate SKU
 
 	// create and save item into db\
