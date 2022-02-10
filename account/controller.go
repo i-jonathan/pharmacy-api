@@ -63,10 +63,6 @@ func getAllUsers(w http.ResponseWriter, r *http.Request) {
 	db.Scopes(core.Paginate(r)).Find(&users)
 	db.Model(&User{}).Count(&count)
 
-	if len(users) == 0 {
-		w.WriteHeader(http.StatusNoContent)
-		return
-	}
 	page, prev, next := core.ResponseData(int(count), r)
 	response := core.Response{
 		Previous: prev,
@@ -79,9 +75,6 @@ func getAllUsers(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-
-	w.WriteHeader(http.StatusOK)
-	return
 }
 
 //Set User
@@ -89,6 +82,7 @@ func getAllUsers(w http.ResponseWriter, r *http.Request) {
 //@Description  Create new user account
 //@Tags         user
 //@Accept       json
+//@Param        postUser  body  User  true  "add user"
 //@Produce      json
 //@Success      200       {object}  User
 //@Failure      400  {object}  core.ErrorResponse
@@ -118,6 +112,8 @@ func postUser(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	user.Username = strings.ToLower(strings.ReplaceAll(user.FullName, " ", ""))
+	user.Email = strings.ToLower(user.Email)
+
 	// save user
 	db.Create(&user)
 

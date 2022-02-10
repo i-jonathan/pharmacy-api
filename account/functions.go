@@ -67,7 +67,7 @@ func generatePasswordHash(password string) (string, error) {
 }
 
 // compare entered password with stored password to check correctness of password
-func comparePassword(password, hash string) (bool, error) {
+func ComparePassword(password, hash string) (bool, error) {
 	parts := strings.Split(hash, "$")
 	config := &passwordConfig{}
 

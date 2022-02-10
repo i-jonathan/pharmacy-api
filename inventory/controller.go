@@ -29,11 +29,6 @@ func getAllItems(w http.ResponseWriter, r *http.Request) {
 	db.Model(&product{}).Count(&count)
 	db.Scopes(core.Paginate(r)).Preload(clause.Associations).Find(&products)
 
-	if len(products) == 0 {
-		w.WriteHeader(http.StatusNoContent)
-	} else {
-		w.WriteHeader(http.StatusOK)
-	}
 	page, prev, next := core.ResponseData(int(count), r)
 	response := core.Response{
 		Previous: prev,
@@ -42,23 +37,22 @@ func getAllItems(w http.ResponseWriter, r *http.Request) {
 		Count:    count,
 		Data:     products,
 	}
-	err := json.NewEncoder(w).Encode(response)
 
+	err := json.NewEncoder(w).Encode(response)
 	if err != nil {
 		log.Println(err)
 	}
-	return
 }
 
 //Get Item
-//@Summary Get item
-//@Description Get a single item by id
-//@Tags inventory
-//@Produce json
-//@Param id path int true "id"
-//@Success 200 {object} product
-//@Failure 404 {object} core.ErrorResponse
-//@Router /inventory/{id} [get]
+//@Summary      Get item
+//@Description  Get a single item by id
+//@Tags         inventory
+//@Produce      json
+//@Param        id   path      int  true  "id"
+//@Success      200  {object}  product
+//@Failure      404  {object}  core.ErrorResponse
+//@Router       /inventory/{id} [get]
 func getItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	itemId := mux.Vars(r)["id"]
@@ -87,15 +81,15 @@ func getItem(w http.ResponseWriter, r *http.Request) {
 }
 
 //Post Item
-//@Summary Post Item
-//@Description Add a new item
-//@Tags inventory
-//@Param addItem body product true "add item"
-//@Accept json
-//@Produce json
-//@Success 200 {object} product
-//@Failure 400 {object} core.ErrorResponse
-//@Router /inventory/add [post]
+//@Summary      Post Item
+//@Description  Add a new item
+//@Tags         inventory
+//@Param        addItem  body  product  true  "add item"
+//@Accept       json
+//@Produce      json
+//@Success      200  {object}  product
+//@Failure      400  {object}  core.ErrorResponse
+//@Router       /inventory/add [post]
 func addItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Conten-Type", "application/json")
 	var item product
@@ -133,15 +127,15 @@ func addItem(w http.ResponseWriter, r *http.Request) {
 }
 
 //Make Sale
-//@Summary Sell Item
-//@Description Sell an Item
-//@Tags inventory
-//@Param saleItem body saleData true "Sell item"
-//@Accept json
-//@Produce json
-//@Success 200 {object} product
-//@Failure 400 {object} core.ErrorResponse
-//@Router /inventory/sell-item [post]
+//@Summary      Sell Item
+//@Description  Sell an Item
+//@Tags         inventory
+//@Param        saleItem  body  saleData  true  "Sell item"
+//@Accept       json
+//@Produce      json
+//@Success      200  {object}  product
+//@Failure      400  {object}  core.ErrorResponse
+//@Router       /inventory/sell-item [post]
 func sellItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var item product
