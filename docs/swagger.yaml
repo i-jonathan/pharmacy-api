@@ -177,15 +177,6 @@ paths:
                 '[]data':
                   $ref: '#/definitions/account.User'
               type: object
-        "204":
-          description: No Content
-          schema:
-            allOf:
-            - $ref: '#/definitions/core.Response'
-            - properties:
-                '[]data':
-                  $ref: '#/definitions/account.User'
-              type: object
       summary: Get users
       tags:
       - user
@@ -283,15 +274,6 @@ paths:
       responses:
         "200":
           description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/core.Response'
-            - properties:
-                '[]data':
-                  $ref: '#/definitions/inventory.product'
-              type: object
-        "204":
-          description: No Content
           schema:
             allOf:
             - $ref: '#/definitions/core.Response'

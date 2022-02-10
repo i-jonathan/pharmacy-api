@@ -97,24 +97,6 @@ var doc = `{
                                 }
                             ]
                         }
-                    },
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/core.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "[]data": {
-                                            "$ref": "#/definitions/account.User"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
                     }
                 }
             }
@@ -264,24 +246,6 @@ var doc = `{
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/core.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "[]data": {
-                                            "$ref": "#/definitions/inventory.product"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "204": {
-                        "description": "No Content",
                         "schema": {
                             "allOf": [
                                 {

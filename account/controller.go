@@ -54,7 +54,6 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 //@Tags         user
 //@Produce      json
 //@Success      200  {object}  core.Response{[]data=User}
-//@Success      204  {object}  core.Response{[]data=User}
 //@Router       /account/all [get]
 func getAllUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
