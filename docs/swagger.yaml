@@ -1,9 +1,0 @@
-info:
-  contact:
-    email: farinloyejonathan@gmail.com
-    name: Jonathan Farinloye
-  description: An API server for a not yet operational pharmacy
-  title: Pharmacy First Steps
-  version: "1.0"
-paths: {}
-swagger: "2.0"
