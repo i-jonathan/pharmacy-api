@@ -23,7 +23,7 @@ type Supplier struct {
 }
 
 type Product struct {
-	// TODO change price to decimal 
+	// TODO change price to decimal
 	ID                int        `json:"id"`
 	Name              string     `json:"name"`
 	BarCode           string     `json:"bar_code"`

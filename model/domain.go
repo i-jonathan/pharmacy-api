@@ -65,10 +65,10 @@ func (s *Supplier) Valid() bool {
 }
 
 func (p *Product) Valid() bool {
-	stringToValudate := []string{p.Name, p.BarCode}
+	stringToValidate := []string{p.Name, p.BarCode}
 	intToValidate := []int{p.PurchasePrice, p.SellingPrice, p.ReorderLevel}
 
-	return stringValidation(stringToValudate) && integerValidation(intToValidate)
+	return stringValidation(stringToValidate) && integerValidation(intToValidate)
 }
 
 func (p *PaymentMethod) Valid() bool {
