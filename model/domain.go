@@ -70,3 +70,17 @@ func (p *Product) Valid() bool {
 
 	return stringValidation(stringToValudate) && integerValidation(intToValidate)
 }
+
+func (p *PaymentMethod) Valid() bool {
+	toValidate := []string{p.Name}
+	return stringValidation(toValidate)
+}
+
+func (i *OrderItem) Valid() bool {
+	intToValidate := []int{i.Quantity}
+	return integerValidation(intToValidate)
+}
+
+func (o *Order) Valid() bool {
+	return true
+}
