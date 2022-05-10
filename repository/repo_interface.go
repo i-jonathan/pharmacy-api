@@ -77,6 +77,14 @@ type OrderRepository interface {
 	DeleteOrder(string) error
 }
 
+type ReturnRepository interface {
+	FetchReturns() ([]model.Return, error)
+	FetchReturnBySlug(string) (model.Return, error)
+	CreateReturn(model.Return) (int, error)
+	UpdateReturn(model.Return) error
+	DeleteReturn(string) error
+}
+
 type PharmacyRepository interface {
 	PermissionRepository
 	RoleRepository
@@ -87,4 +95,5 @@ type PharmacyRepository interface {
 	PaymentMethodRepository
 	OrderItemRepository
 	OrderRepository
+	ReturnRepository
 }

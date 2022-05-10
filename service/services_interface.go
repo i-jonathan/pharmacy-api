@@ -77,6 +77,14 @@ type OrderUseCase interface {
 	DeleteOrder(string) error
 }
 
+type ReturnUseCase interface {
+	FetchReturns() ([]model.Return, error)
+	FetchReturnBySlug(string) (model.Return, error)
+	CreateReturn(model.Return) (model.Return, error)
+	UpdateReturn(model.Return) (model.Return, error)
+	DeleteReturn(string) error
+}
+
 type PharmacyUseCase interface {
 	PermissionUseCase
 	RoleUseCase
@@ -87,4 +95,5 @@ type PharmacyUseCase interface {
 	PaymentMethodUseCase
 	OrderItemUseCase
 	OrderUseCase
+	ReturnUseCase
 }
