@@ -33,3 +33,14 @@ type Order struct {
 	Change          int           `json:"change"`
 	CreatedAt       time.Time     `json:"created_at"`
 }
+
+type Return struct {
+	ID        int         `json:"id"`
+	Reason    string      `json:"reason"`
+	Item      []OrderItem `json:"item"`
+	Order     Order       `json:"order"`
+	OrderID   int         `json:"order_id"`
+	CreatedBy Account     `json:"created_by"`
+	UserID    int         `json:"user_id"`
+	Slug      string      `json:"slug"`
+}
