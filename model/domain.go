@@ -1,6 +1,10 @@
 package model
 
-import "strings"
+import (
+	"github.com/i-jonathan/pharmacy-api/config"
+	"github.com/speps/go-hashids/v2"
+	"strings"
+)
 
 func stringInSlice(s string, list []string) bool {
 	for _, b := range list {
@@ -28,6 +32,46 @@ func integerValidation(list []int) bool {
 		}
 	}
 	return true
+}
+
+//ToHashID converts id to hash ID
+func ToHashID(id int) (string, error) {
+	hashData := hashids.NewData()
+
+	config2 := config.GetConfig()
+	hashData.Salt = config2.HashSalt
+	hashData.MinLength = 10
+
+	hashing, err := hashids.NewWithData(hashData)
+	if err != nil {
+		return "", err
+	}
+
+	slug, err := hashing.Encode([]int{id})
+	if err != nil {
+		return "", err
+	}
+	return slug, nil
+}
+
+//DecodeID converts slug to integer ID
+func DecodeID(slug string) (int, error) {
+	hashData := hashids.NewData()
+
+	config2 := config.GetConfig()
+	hashData.Salt = config2.HashSalt
+	hashData.MinLength = 10
+
+	hashing, err := hashids.NewWithData(hashData)
+	if err != nil {
+		return 0, err
+	}
+	decoded, err := hashing.DecodeWithError(slug)
+	if err != nil {
+		return 0, err
+	}
+
+	return decoded[0], nil
 }
 
 // Valid returns true if permission is valid

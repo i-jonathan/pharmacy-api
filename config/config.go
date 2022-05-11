@@ -3,11 +3,12 @@ package config
 import "os"
 
 type Configuration struct {
-	DBName string
-	DBPass string
-	DBHost string
-	DBUser string
+	DBName     string
+	DBPass     string
+	DBHost     string
+	DBUser     string
 	DBProtocol string
+	HashSalt   string
 }
 
 var config Configuration
@@ -19,6 +20,7 @@ func LoadEnv() {
 		DBHost:     os.Getenv("database_host"),
 		DBUser:     os.Getenv("database_user"),
 		DBProtocol: os.Getenv("database_protocol"),
+		HashSalt:   os.Getenv("hash_salt"),
 	}
 }
 
