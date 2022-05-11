@@ -17,6 +17,8 @@ type OrderItem struct {
 	Product   Product `json:"product"`
 	ProductID int     `json:"product_id"`
 	Quantity  int     `json:"quantity"`
+	OrderID   int     `json:"order_id"`
+	ReturnID  int     `json:"return_id"`
 }
 
 type Order struct {
@@ -42,5 +44,6 @@ type Return struct {
 	OrderID   int         `json:"order_id"`
 	CreatedBy Account     `json:"created_by"`
 	UserID    int         `json:"user_id"`
+	CreatedAt time.Time   `json:"created_at"`
 	Slug      string      `json:"slug"`
 }
