@@ -6,83 +6,83 @@ import "github.com/i-jonathan/pharmacy-api/model"
 
 type PermissionRepository interface {
 	FetchPermissions() ([]model.Permission, error)
-	FetchPermissionBySlug(string) (model.Permission, error)
+	FetchPermissionByID(int) (model.Permission, error)
 	CreatePermission(model.Permission) (int, error)
 	UpdatePermission(model.Permission) error
-	DeletePermission(string) error
+	DeletePermission(int) error
 }
 
 type RoleRepository interface {
 	FetchRoles() ([]model.Role, error)
-	FetchRoleBySlug(string) (model.Role, error)
+	FetchRoleByID(int) (model.Role, error)
 	CreateRole(model.Role) (int, error)
 	UpdateRole(model.Role) error
-	DeleteRole(string) error
+	DeleteRole(int) error
 }
 
 type AccountRepository interface {
 	FetchAccounts() ([]model.Account, error)
-	FetchAccountBySlug(string) (model.Account, error)
+	FetchAccountByID(int) (model.Account, error)
 	CreateAccount(model.Account) (int, error)
 	UpdateAccount(model.Account) error
-	DeleteAccount(string) error
+	DeleteAccount(int) error
 }
 
 // inventory management repositories
 
 type CategoryRepository interface {
 	FetchCategories() ([]model.Category, error)
-	FetchCategoryBySlug(string) (model.Category, error)
+	FetchCategoryByID(int) (model.Category, error)
 	CreateCategory(model.Category) (int, error)
 	UpdateCategory(model.Category) error
-	DeleteCategory(string) error
+	DeleteCategory(int) error
 }
 
 type SupplierRepository interface {
 	FetchSuppliers() ([]model.Supplier, error)
-	FetchSupplierBySlug(string) (model.Supplier, error)
+	FetchSupplierByID(int) (model.Supplier, error)
 	CreateSupplier(model.Supplier) (int, error)
 	UpdateSupplier(model.Supplier) error
-	DeleteSupplier(string) error
+	DeleteSupplier(int) error
 }
 type ProductRepository interface {
 	FetchProducts() ([]model.Product, error)
-	FetchProductBySlug(string) (model.Product, error)
+	FetchProductByID(int) (model.Product, error)
 	CreateProduct(model.Product) (int, error)
 	UpdateProduct(model.Product) error
-	DeleteProduct(string) error
+	DeleteProduct(int) error
 }
 
 // sales management repositories
 
 type PaymentMethodRepository interface {
 	FetchPaymentMethods() ([]model.PaymentMethod, error)
-	FetchPaymentMethodBySlug(string) (model.PaymentMethod, error)
+	FetchPaymentMethodByID(int) (model.PaymentMethod, error)
 	CreatePaymentMethod(model.PaymentMethod) (int, error)
 	UpdatePaymentMethod(model.PaymentMethod) error
-	DeletePaymentMethod(string) error
+	DeletePaymentMethod(int) error
 }
 type OrderItemRepository interface {
 	FetchOrderItems() ([]model.OrderItem, error)
-	FetchOrderItemBySlug(string) (model.OrderItem, error)
+	FetchOrderItemByID(int) (model.OrderItem, error)
 	CreateOrderItem(model.OrderItem) (int, error)
 	UpdateOrderItem(model.OrderItem) error
-	DeleteOrderItem(string) error
+	DeleteOrderItem(int) error
 }
 type OrderRepository interface {
 	FetchOrders() ([]model.Order, error)
-	FetchOrderBySlug(string) (model.Order, error)
+	FetchOrderByID(int) (model.Order, error)
 	CreateOrder(model.Order) (int, error)
 	UpdateOrder(model.Order) error
-	DeleteOrder(string) error
+	DeleteOrder(int) error
 }
 
 type ReturnRepository interface {
 	FetchReturns() ([]model.Return, error)
-	FetchReturnBySlug(string) (model.Return, error)
+	FetchReturnByID(int) (model.Return, error)
 	CreateReturn(model.Return) (int, error)
 	UpdateReturn(model.Return) error
-	DeleteReturn(string) error
+	DeleteReturn(int) error
 }
 
 type PharmacyRepository interface {
