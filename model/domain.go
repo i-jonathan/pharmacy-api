@@ -1,10 +1,23 @@
 package model
 
 import (
+	"crypto/rand"
+	"crypto/subtle"
+	"encoding/base64"
+	"fmt"
 	"github.com/i-jonathan/pharmacy-api/config"
 	"github.com/speps/go-hashids/v2"
+	"golang.org/x/crypto/argon2"
+	"regexp"
 	"strings"
 )
+
+type passwordConfig struct {
+	time    uint32
+	memory  uint32
+	threads uint8
+	keyLen  uint32
+}
 
 func stringInSlice(s string, list []string) bool {
 	for _, b := range list {
@@ -94,9 +107,66 @@ func (r *Role) Valid() bool {
 func (a *Account) Valid() bool {
 	toCheck := []string{a.FirstName, a.LastName, a.Password, a.PhoneNumber}
 
+	re := regexp.MustCompile("^.+@.+\\..+$")
+	validity := re.MatchString(a.Email)
+
+	if !validity {
+		return false
+	}
+
 	// Look into doing extra account validation
 	// Probably password, email or what not
 	return stringValidation(toCheck)
+}
+
+func (a *Account) HashPassword() error {
+	salt := make([]byte, 16)
+	if _, err := rand.Read(salt); err != nil {
+		return err
+	}
+
+	passConfig := &passwordConfig{
+		time:    1,
+		memory:  64 * 1024,
+		threads: 4,
+		keyLen:  32,
+	}
+	hash := argon2.IDKey([]byte(a.Password), salt, passConfig.time, passConfig.memory, passConfig.threads, passConfig.keyLen)
+	b64Salt := base64.RawStdEncoding.EncodeToString(salt)
+	b64Hash := base64.RawStdEncoding.EncodeToString(hash)
+
+	// Format for storing argon2id in database: argon2 version, memory, time,
+	// number of threads, salt and hash encoded in base 64
+	format := "$argon2id$v=%d$m=%d,t=%d,p=%d$%s$%s"
+	full := fmt.Sprintf(format, argon2.Version, passConfig.memory, passConfig.time, passConfig.threads, b64Salt, b64Hash)
+	a.Password = full
+	return nil
+}
+
+func (a *Account) ComparePassword(hash string) (bool, error) {
+	parts := strings.Split(hash, "$")
+	passConfig := &passwordConfig{}
+
+	_, err := fmt.Sscanf(parts[3], "m=%d,t=%d,p=%d", &passConfig.memory, &passConfig.time, &passConfig.threads)
+	if err != nil {
+		return false, err
+	}
+
+	salt, err := base64.RawStdEncoding.DecodeString(parts[4])
+	if err != nil {
+		return false, err
+	}
+
+	decodedHash, err := base64.RawStdEncoding.DecodeString(parts[5])
+	if err != nil {
+		return false, err
+	}
+
+	passConfig.keyLen = uint32(len(decodedHash))
+
+	comparisonHash := argon2.IDKey([]byte(a.Password), salt, passConfig.time, passConfig.memory, passConfig.threads, passConfig.keyLen)
+
+	return subtle.ConstantTimeCompare(decodedHash, comparisonHash) == 1, nil
 }
 
 func (c *Category) Valid() bool {
