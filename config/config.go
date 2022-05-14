@@ -9,6 +9,7 @@ type Configuration struct {
 	DBUser     string
 	DBProtocol string
 	HashSalt   string
+	HMAC       string
 }
 
 var config Configuration
@@ -21,6 +22,7 @@ func LoadEnv() {
 		DBUser:     os.Getenv("database_user"),
 		DBProtocol: os.Getenv("database_protocol"),
 		HashSalt:   os.Getenv("hash_salt"),
+		HMAC:       os.Getenv("hmac"),
 	}
 }
 

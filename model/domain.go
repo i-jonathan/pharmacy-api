@@ -2,7 +2,6 @@ package model
 
 import (
 	"crypto/rand"
-	"crypto/subtle"
 	"encoding/base64"
 	"fmt"
 	"github.com/i-jonathan/pharmacy-api/config"
@@ -141,32 +140,6 @@ func (a *Account) HashPassword() error {
 	full := fmt.Sprintf(format, argon2.Version, passConfig.memory, passConfig.time, passConfig.threads, b64Salt, b64Hash)
 	a.Password = full
 	return nil
-}
-
-func (a *Account) ComparePassword(hash string) (bool, error) {
-	parts := strings.Split(hash, "$")
-	passConfig := &passwordConfig{}
-
-	_, err := fmt.Sscanf(parts[3], "m=%d,t=%d,p=%d", &passConfig.memory, &passConfig.time, &passConfig.threads)
-	if err != nil {
-		return false, err
-	}
-
-	salt, err := base64.RawStdEncoding.DecodeString(parts[4])
-	if err != nil {
-		return false, err
-	}
-
-	decodedHash, err := base64.RawStdEncoding.DecodeString(parts[5])
-	if err != nil {
-		return false, err
-	}
-
-	passConfig.keyLen = uint32(len(decodedHash))
-
-	comparisonHash := argon2.IDKey([]byte(a.Password), salt, passConfig.time, passConfig.memory, passConfig.threads, passConfig.keyLen)
-
-	return subtle.ConstantTimeCompare(decodedHash, comparisonHash) == 1, nil
 }
 
 func (c *Category) Valid() bool {

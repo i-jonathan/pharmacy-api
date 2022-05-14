@@ -4,6 +4,11 @@ import "github.com/i-jonathan/pharmacy-api/model"
 
 // account management repositories
 
+type AuthRepository interface {
+	FetchAccountWithPassword(model.Auth) (model.Account, error)
+	BlacklistToken(hash, token string) (bool, error)
+}
+
 type PermissionRepository interface {
 	FetchPermissions() ([]model.Permission, error)
 	FetchPermissionByID(int) (model.Permission, error)

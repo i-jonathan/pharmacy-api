@@ -22,6 +22,9 @@ func main() {
 	router.InitPermissionRouter(accountService)
 	router.InitAccountRouter(accountService)
 
+	authService := service.NewAuthService(repo)
+	router.InitAuthRouter(authService)
+
 	log.Println("Starting Server...")
 	if err := http.ListenAndServe(":9576", mainRouter); err != nil {
 		log.Panicln(err)
