@@ -126,7 +126,7 @@ func (r *repo) DeleteRole(id int) error {
 
 func (r *repo) FetchAccounts() ([]model.Account, error) {
 	var result []model.Account
-	statement := "SELECT account.id, first_name, last_name, email, phone_number, account.created_at, coalesce(role_id, 0) as role_id, coalesce(role.name, '') as role_name FROM account Left JOIN role ON account.role_id=role.id;"
+	const statement = "SELECT account.id, first_name, last_name, email, phone_number, account.created_at, coalesce(role_id, 0) as role_id, coalesce(role.name, '') as role_name FROM account Left JOIN role ON account.role_id=role.id;"
 
 	rows, err := r.Conn.Query(statement)
 	if err != nil {
@@ -202,7 +202,7 @@ func (r *repo) CreateAccount(account model.Account) (int, error) {
 		return 0, appError.BadRequest
 	}
 
-	statement := "INSERT INTO account (first_name, last_name, email, password, phone_number) VALUES ($1, $2, $3, $4, $5) returning id;"
+	const statement = "INSERT INTO account (first_name, last_name, email, password, phone_number) VALUES ($1, $2, $3, $4, $5) returning id;"
 	var id int
 	err := r.Conn.QueryRow(statement, account.FirstName, account.LastName, account.Email, account.Password, account.PhoneNumber).Scan(&id)
 
@@ -214,7 +214,7 @@ func (r *repo) CreateAccount(account model.Account) (int, error) {
 }
 
 func (r *repo) UpdateAccount(account model.Account) error {
-	statement := "UPDATE account SET first_name = $1, last_name = $2, email = $3, phone_number = $4, role_id = $5 WHERE id = $6;"
+	const statement = "UPDATE account SET first_name = $1, last_name = $2, email = $3, phone_number = $4, role_id = $5 WHERE id = $6;"
 	var role interface{}
 
 	if account.RoleID == 0 {
@@ -231,7 +231,7 @@ func (r *repo) UpdateAccount(account model.Account) error {
 }
 
 func (r *repo) DeleteAccount(id int) error {
-	statement := "DELETE FROM account WHERE id = $1;"
+	const statement = "DELETE FROM account WHERE id = $1;"
 
 	_, err := r.Conn.Exec(statement, id)
 	if err != nil {
