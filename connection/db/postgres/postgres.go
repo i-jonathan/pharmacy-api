@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/i-jonathan/pharmacy-api/config"
+	_ "github.com/lib/pq"
 )
 
 type repo struct {
@@ -17,8 +18,7 @@ func NewDBConnection() (*repo, error) {
 	dbRepo := new(repo)
 	var err error
 
-	//dsn := fmt.Sprintf("%s:%s@%s(%s:%s)/%s", dbConfig.DbUser, dbConfig.DbPass, dbConfig.DbProtocol, dbConfig.DbIP, dbConfig.DbPort, dbConfig.DbName)
-	dsn := ""
+	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbConfig.DBHost, dbConfig.DBPort, dbConfig.DBUser, dbConfig.DBName, dbConfig.DBPass)
 	fmt.Println(dsn)
 
 	dbRepo.Conn, err = sql.Open("postgres", dsn)

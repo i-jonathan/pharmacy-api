@@ -111,17 +111,30 @@ func (service *accountService) FetchAccountBySlug(slug string) (model.Account, e
 
 func (service *accountService) CreateAccount(account model.Account) (model.Account, error) {
 	valid := account.Valid()
+	err := account.HashPassword()
 
+	if err != nil {
+		log.Println(err)
+		return model.Account{}, appError.ServerError
+	}
 	if !valid {
 		return model.Account{}, appError.BadRequest
 	}
 
 	result, err := service.repo.CreateAccount(account)
+
 	if err != nil {
 		log.Println("Error during account: ", err)
+		if err == appError.BadRequest {
+			return model.Account{}, err
+		}
 		return model.Account{}, appError.ServerError
 	}
 	account.ID = result
+	account.Slug, err = model.ToHashID(account.ID)
+	if err != nil {
+		log.Println(err)
+	}
 	account.Password = ""
 	return account, nil
 }
@@ -143,6 +156,9 @@ func (service *accountService) UpdateAccount(account model.Account) (model.Accou
 		return model.Account{}, appError.ServerError
 	}
 
+	// set password to spoof valid function
+	// TODO consider a dedicated password checker
+	account.Password = "someText"
 	if !account.Valid() {
 		return model.Account{}, appError.BadRequest
 	}

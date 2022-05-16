@@ -83,6 +83,7 @@ func (controller *accountController) DeleteAccount(w http.ResponseWriter, r *htt
 	err := controller.svc.DeleteAccount(slug)
 	if err != nil {
 		helper.ReturnFailure(w, err)
+		return
 	}
 
 	helper.ReturnDelete(w)

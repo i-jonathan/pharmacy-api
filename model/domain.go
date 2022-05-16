@@ -48,6 +48,9 @@ func integerValidation(list []int) bool {
 
 //ToHashID converts id to hash ID
 func ToHashID(id int) (string, error) {
+	if id < 1 {
+		return "", nil
+	}
 	hashData := hashids.NewData()
 
 	config2 := config.GetConfig()
