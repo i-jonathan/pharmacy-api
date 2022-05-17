@@ -105,5 +105,12 @@ func (controller *accountController) Login(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	http.SetCookie(w, &http.Cookie{
+		Name:     "Authorization",
+		Value:    token,
+		MaxAge:   57600,
+		HttpOnly: true,
+	})
+
 	helper.ReturnSuccess(w, map[string]string{"Token": token})
 }
