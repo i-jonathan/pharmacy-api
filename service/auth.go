@@ -43,7 +43,7 @@ func (a *authService) SignIn(auth model.Auth) (string, error) {
 func (a *authService) Logout(hash, token string) error {
 	done, err := a.repo.BlacklistToken(hash, token)
 
-	if err != nil || !done {
+	if !done {
 		log.Println(err)
 		return appError.ServerError
 	}

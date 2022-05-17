@@ -14,12 +14,10 @@ type repo struct {
 
 func NewDBConnection() (*repo, error) {
 	dbConfig := config.GetConfig()
-	fmt.Println(dbConfig)
 	dbRepo := new(repo)
 	var err error
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbConfig.DBHost, dbConfig.DBPort, dbConfig.DBUser, dbConfig.DBName, dbConfig.DBPass)
-	fmt.Println(dsn)
 
 	dbRepo.Conn, err = sql.Open("postgres", dsn)
 

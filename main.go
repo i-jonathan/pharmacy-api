@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/i-jonathan/pharmacy-api/config"
-	db "github.com/i-jonathan/pharmacy-api/connection/db/postgres"
+	db "github.com/i-jonathan/pharmacy-api/connection/db/sql"
 	"github.com/i-jonathan/pharmacy-api/interface/mux/router"
 	"github.com/i-jonathan/pharmacy-api/service"
 	"log"

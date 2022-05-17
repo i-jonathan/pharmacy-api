@@ -185,6 +185,24 @@ func (r *repo) FetchAccountByID(id int) (model.Account, error) {
 	return result, nil
 }
 
+func (r *repo) FetchAccountWithPassword(auth model.Auth) (model.Account, error) {
+	var result model.Account
+	const query = "SELECT id, email, password from account where email=$1;"
+
+	err := r.Conn.QueryRow(query, auth.Email).Scan(&result.ID, &result.Email, &result.Password)
+
+	if err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			return model.Account{}, appError.NotFound
+		default:
+			return model.Account{}, err
+		}
+	}
+
+	return result, nil
+}
+
 func (r *repo) CreateAccount(account model.Account) (int, error) {
 	var phoneExists bool
 	var emailExists bool
