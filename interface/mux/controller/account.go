@@ -88,3 +88,22 @@ func (controller *accountController) DeleteAccount(w http.ResponseWriter, r *htt
 
 	helper.ReturnDelete(w)
 }
+
+func (controller *accountController) Login(w http.ResponseWriter, r *http.Request) {
+	var auth model.Auth
+	err := json.NewDecoder(r.Body).Decode(&auth)
+	if err != nil {
+		log.Println(err)
+		helper.ReturnFailure(w, appError.ServerError)
+		return
+	}
+
+	token, err := controller.svc.SignIn(auth)
+
+	if err != nil {
+		helper.ReturnFailure(w, err)
+		return
+	}
+
+	helper.ReturnSuccess(w, map[string]string{"Token": token})
+}

@@ -192,3 +192,28 @@ func (service *accountService) DeleteAccount(s string) error {
 	}
 	return nil
 }
+
+func (service *accountService) SignIn(auth model.Auth) (string, error) {
+	account, err := service.repo.FetchAccountWithPassword(auth)
+
+	if err != nil {
+		log.Println(err)
+		if err == appError.NotFound {
+			return "", err
+		}
+		return "", appError.ServerError
+	}
+
+	valid, err := auth.ComparePassword(account.Password)
+	if err != nil || !valid {
+		log.Print(err)
+		return "", appError.Unauthorized
+	}
+
+	token, err := account.CreateToken()
+	if err != nil {
+		log.Println(err)
+		return "", appError.ServerError
+	}
+	return token, nil
+}

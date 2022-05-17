@@ -10,6 +10,5 @@ func InitAuthRouter(svc service.AuthUseCase) {
 	authController := controller.NewAuthController(svc)
 	authRouter := router.PathPrefix("auth").Subrouter()
 
-	authRouter.HandleFunc("/login", authController.Login).Methods(http.MethodPost)
 	authRouter.HandleFunc("/logout", authController.Logout).Methods(http.MethodPost)
 }

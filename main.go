@@ -2,7 +2,8 @@ package main
 
 import (
 	"github.com/i-jonathan/pharmacy-api/config"
-	db "github.com/i-jonathan/pharmacy-api/connection/db/sql"
+	noSql "github.com/i-jonathan/pharmacy-api/connection/db/redis"
+	"github.com/i-jonathan/pharmacy-api/connection/db/sql"
 	"github.com/i-jonathan/pharmacy-api/interface/mux/router"
 	"github.com/i-jonathan/pharmacy-api/service"
 	"log"
@@ -18,11 +19,16 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	noSqlRepo, err := noSql.NewRedisConnection()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	accountService := service.NewAccountService(repo)
 	router.InitPermissionRouter(accountService)
 	router.InitAccountRouter(accountService)
 
-	authService := service.NewAuthService(repo)
+	authService := service.NewAuthService(noSqlRepo)
 	router.InitAuthRouter(authService)
 
 	log.Println("Starting Server...")

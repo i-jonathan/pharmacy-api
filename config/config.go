@@ -15,7 +15,7 @@ type Configuration struct {
 	HashSalt     string
 	HMAC         string
 	RedisAddress string
-	RedisPort    string
+	RedisPass    string
 }
 
 var config Configuration
@@ -34,7 +34,7 @@ func LoadEnv() {
 		HashSalt:     os.Getenv("hash_salt"),
 		HMAC:         os.Getenv("hmac"),
 		RedisAddress: os.Getenv("redis_address"),
-		RedisPort:    os.Getenv("redis_port"),
+		RedisPass:    os.Getenv("redis_pass"),
 	}
 }
 

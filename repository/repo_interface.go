@@ -5,7 +5,6 @@ import "github.com/i-jonathan/pharmacy-api/model"
 // account management repositories
 
 type AuthRepository interface {
-	FetchAccountWithPassword(model.Auth) (model.Account, error)
 	BlacklistToken(hash, token string) (bool, error)
 }
 
@@ -31,6 +30,7 @@ type AccountRepository interface {
 	CreateAccount(model.Account) (int, error)
 	UpdateAccount(model.Account) error
 	DeleteAccount(int) error
+	FetchAccountWithPassword(model.Auth) (model.Account, error)
 }
 
 // inventory management repositories

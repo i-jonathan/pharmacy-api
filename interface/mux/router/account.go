@@ -15,4 +15,5 @@ func InitAccountRouter(svc service.AccountUseCase) {
 	accountRouter.HandleFunc("/{slug}", accountController.FetchAccountBySlug).Methods(http.MethodGet)
 	accountRouter.HandleFunc("/{slug}", accountController.UpdateAccount).Methods(http.MethodPut)
 	accountRouter.HandleFunc("/{slug}", accountController.DeleteAccount).Methods(http.MethodDelete)
+	accountRouter.HandleFunc("/login", accountController.Login).Methods(http.MethodPost)
 }

@@ -5,7 +5,6 @@ import "github.com/i-jonathan/pharmacy-api/model"
 // account management repositories
 
 type AuthUseCase interface {
-	SignIn(auth model.Auth) (string, error)
 	Logout(hash, token string) error
 }
 
@@ -26,6 +25,7 @@ type RoleUseCase interface {
 }
 
 type AccountUseCase interface {
+	SignIn(auth model.Auth) (string, error)
 	FetchAccounts() ([]model.Account, error)
 	FetchAccountBySlug(string) (model.Account, error)
 	CreateAccount(model.Account) (model.Account, error)

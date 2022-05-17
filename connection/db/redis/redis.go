@@ -17,7 +17,7 @@ func NewRedisConnection() (*repo, error) {
 
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     config2.RedisAddress,
-		Password: config2.DBPass,
+		Password: config2.RedisPass,
 		DB:       0,
 	})
 

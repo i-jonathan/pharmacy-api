@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"fmt"
 	appError "github.com/i-jonathan/pharmacy-api/error"
 	"github.com/i-jonathan/pharmacy-api/interface/mux/helper"
@@ -17,25 +16,6 @@ type authController struct {
 
 func NewAuthController(s service.AuthUseCase) *authController {
 	return &authController{s}
-}
-
-func (controller *authController) Login(w http.ResponseWriter, r *http.Request) {
-	var auth model.Auth
-	err := json.NewDecoder(r.Body).Decode(&auth)
-	if err != nil {
-		log.Println(err)
-		helper.ReturnFailure(w, appError.ServerError)
-		return
-	}
-
-	token, err := controller.svc.SignIn(auth)
-
-	if err != nil {
-		helper.ReturnFailure(w, err)
-		return
-	}
-
-	helper.ReturnSuccess(w, map[string]string{"Token": token})
 }
 
 func (controller *authController) Logout(w http.ResponseWriter, r *http.Request) {
