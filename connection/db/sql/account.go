@@ -10,7 +10,7 @@ import (
 func (r *repo) FetchPermissions() ([]model.Permission, error) {
 	var result []model.Permission
 
-	query := "SELECT id, name, description, created_at FROM permission;"
+	const query = "SELECT id, name, description, created_at FROM permission;"
 
 	rows, err := r.Conn.Query(query)
 
@@ -47,7 +47,7 @@ func (r *repo) FetchPermissions() ([]model.Permission, error) {
 func (r *repo) FetchPermissionByID(id int) (model.Permission, error) {
 	var result model.Permission
 
-	query := "SELECT id, name, description, created_at FROM permission WHERE id = $1;"
+	const query = "SELECT id, name, description, created_at FROM permission WHERE id = $1;"
 	row := r.Conn.QueryRow(query, id)
 
 	if err := row.Err(); err != nil {
@@ -72,7 +72,7 @@ func (r *repo) FetchPermissionByID(id int) (model.Permission, error) {
 }
 
 func (r *repo) CreatePermission(permission model.Permission) (int, error) {
-	statement := "INSERT INTO permission (name, description) VALUES ($1, $2) returning id;"
+	const statement = "INSERT INTO permission (name, description) VALUES ($1, $2) returning id;"
 	var id int
 	err := r.Conn.QueryRow(statement, permission.Name, permission.Description).Scan(&id)
 
@@ -84,7 +84,7 @@ func (r *repo) CreatePermission(permission model.Permission) (int, error) {
 }
 
 func (r *repo) UpdatePermission(permission model.Permission) error {
-	statement := "UPDATE permission SET name = $1, description = $2 WHERE id = $3;"
+	const statement = "UPDATE permission SET name = $1, description = $2 WHERE id = $3;"
 
 	_, err := r.Conn.Exec(statement, permission.Name, permission.Description, permission.ID)
 
@@ -96,7 +96,7 @@ func (r *repo) UpdatePermission(permission model.Permission) error {
 }
 
 func (r *repo) DeletePermission(id int) error {
-	statement := "DELETE FROM permission WHERE id = $1;"
+	const statement = "DELETE FROM permission WHERE id = $1;"
 
 	_, err := r.Conn.Exec(statement, id)
 	if err != nil {
