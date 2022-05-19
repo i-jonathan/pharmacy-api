@@ -45,7 +45,7 @@ func ReturnSuccess(w http.ResponseWriter, data interface{}) {
 	}
 }
 
-func ReturnDelete(w http.ResponseWriter) {
+func ReturnEmptyBody(w http.ResponseWriter, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNoContent)
 }

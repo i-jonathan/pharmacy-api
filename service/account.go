@@ -45,15 +45,75 @@ func (service *accountService) FetchPermissionBySlug(slug string) (model.Permiss
 }
 
 func (service *accountService) CreatePermission(permission model.Permission) (model.Permission, error) {
-	panic("implement me")
+	valid := permission.Valid()
+	if !valid {
+		return model.Permission{}, appError.BadRequest
+	}
+
+	result, err := service.repo.CreatePermission(permission)
+	if err != nil {
+		log.Println(err)
+		return model.Permission{}, appError.ServerError
+	}
+
+	permission.ID = result
+
+	return permission, nil
 }
 
 func (service *accountService) UpdatePermission(permission model.Permission) (model.Permission, error) {
-	panic("implement me")
+	if !permission.Valid()  {
+		return model.Permission{}, appError.BadRequest
+	}
+
+	id, err := model.DecodeID(permission.Slug)
+	if err != nil {
+		log.Println(err)
+		return model.Permission{}, appError.BadRequest
+	}
+
+	_, err = service.repo.FetchAccountByID(id)
+	if err != nil {
+		log.Println(err)
+		if err == appError.BadRequest {
+			return model.Permission{}, err
+		}
+		return model.Permission{}, appError.ServerError
+	}
+	err = service.repo.UpdatePermission(permission)
+
+	if err != nil {
+		log.Println(err)
+		return model.Permission{}, appError.ServerError
+	}
+
+	return permission, nil
 }
 
 func (service *accountService) DeletePermission(slug string) error {
-	panic("implement me")
+	id, err := model.DecodeID(slug)
+	if err != nil {
+		log.Println(err)
+		return appError.BadRequest
+	}
+
+	_, err = service.repo.FetchPermissionByID(id)
+
+	if err != nil {
+		log.Println(err)
+		if err == appError.NotFound {
+			return err
+		}
+		return appError.ServerError
+	}
+
+	err = service.repo.DeletePermission(id)
+	if err != nil {
+		log.Println(err)
+		return appError.ServerError
+	}
+
+	return nil
 }
 
 // Roles

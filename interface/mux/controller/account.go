@@ -19,7 +19,7 @@ func NewAccountController(s service.AccountUseCase) *accountController {
 	return &accountController{s}
 }
 
-func (controller *accountController) FetchAccounts(w http.ResponseWriter, r *http.Request) {
+func (controller *accountController) FetchAccounts(w http.ResponseWriter, _ *http.Request) {
 	result, err := controller.svc.FetchAccounts()
 	if err != nil {
 		helper.ReturnFailure(w, err)
@@ -45,7 +45,7 @@ func (controller *accountController) CreateAccount(w http.ResponseWriter, r *htt
 	err := json.NewDecoder(r.Body).Decode(&account)
 	if err != nil {
 		log.Println(err)
-		helper.ReturnFailure(w, appError.ServerError)
+		helper.ReturnFailure(w, appError.BadRequest)
 		return
 	}
 
@@ -86,7 +86,7 @@ func (controller *accountController) DeleteAccount(w http.ResponseWriter, r *htt
 		return
 	}
 
-	helper.ReturnDelete(w)
+	helper.ReturnEmptyBody(w, http.StatusNoContent)
 }
 
 func (controller *accountController) Login(w http.ResponseWriter, r *http.Request) {

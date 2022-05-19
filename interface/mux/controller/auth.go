@@ -38,5 +38,5 @@ func (controller *authController) Logout(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	helper.ReturnDelete(w)
+	helper.ReturnEmptyBody(w, http.StatusNoContent)
 }

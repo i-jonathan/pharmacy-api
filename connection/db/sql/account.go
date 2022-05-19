@@ -47,7 +47,7 @@ func (r *repo) FetchPermissions() ([]model.Permission, error) {
 func (r *repo) FetchPermissionByID(id int) (model.Permission, error) {
 	var result model.Permission
 
-	query := "SELECT id, name, description, created_at FROM permission WHERE id = ?;"
+	query := "SELECT id, name, description, created_at FROM permission WHERE id = $1;"
 	row := r.Conn.QueryRow(query, id)
 
 	if err := row.Err(); err != nil {
@@ -67,22 +67,19 @@ func (r *repo) FetchPermissionByID(id int) (model.Permission, error) {
 }
 
 func (r *repo) CreatePermission(permission model.Permission) (int, error) {
-	statement := "INSERT INTO permission (name, description) VALUES ?, ?;"
-	resp, err := r.Conn.Exec(statement, permission.Name, permission.Description)
+	statement := "INSERT INTO permission (name, description) VALUES $1, $2 returning id;"
+	var id int
+	err := r.Conn.QueryRow(statement, permission.Name, permission.Description).Scan(&id)
 
-	if err != nil {
+	if err != nil || id < 1{
 		return 0, err
 	}
 
-	id, err := resp.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
 	return int(id), nil
 }
 
 func (r *repo) UpdatePermission(permission model.Permission) error {
-	statement := "UPDATE permission SET name = ?, description = ? WHERE id = ?;"
+	statement := "UPDATE permission SET name = $1, description = $2 WHERE id = $3 returning id;"
 
 	_, err := r.Conn.Exec(statement, permission.Name, permission.Description, permission.ID)
 
@@ -94,7 +91,7 @@ func (r *repo) UpdatePermission(permission model.Permission) error {
 }
 
 func (r *repo) DeletePermission(id int) error {
-	statement := "DELETE FROM permission WHERE id = ?;"
+	statement := "DELETE FROM permission WHERE id = $1;"
 
 	_, err := r.Conn.Exec(statement, id)
 	if err != nil {
