@@ -27,6 +27,7 @@ func main() {
 	accountService := service.NewAccountService(repo)
 	router.InitPermissionRouter(accountService)
 	router.InitAccountRouter(accountService)
+	router.InitRoleRouter(accountService)
 
 	authService := service.NewAuthService(noSqlRepo)
 	router.InitAuthRouter(authService)
