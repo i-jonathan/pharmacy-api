@@ -63,11 +63,16 @@ func (r *repo) FetchPermissionByID(id int) (model.Permission, error) {
 			return model.Permission{}, err
 		}
 	}
+	result.Slug, err = model.ToHashID(result.ID)
+	if err != nil {
+		log.Println(err)
+	}
+
 	return result, nil
 }
 
 func (r *repo) CreatePermission(permission model.Permission) (int, error) {
-	statement := "INSERT INTO permission (name, description) VALUES $1, $2 returning id;"
+	statement := "INSERT INTO permission (name, description) VALUES ($1, $2) returning id;"
 	var id int
 	err := r.Conn.QueryRow(statement, permission.Name, permission.Description).Scan(&id)
 
@@ -79,7 +84,7 @@ func (r *repo) CreatePermission(permission model.Permission) (int, error) {
 }
 
 func (r *repo) UpdatePermission(permission model.Permission) error {
-	statement := "UPDATE permission SET name = $1, description = $2 WHERE id = $3 returning id;"
+	statement := "UPDATE permission SET name = $1, description = $2 WHERE id = $3;"
 
 	_, err := r.Conn.Exec(statement, permission.Name, permission.Description, permission.ID)
 

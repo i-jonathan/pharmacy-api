@@ -57,7 +57,10 @@ func (service *accountService) CreatePermission(permission model.Permission) (mo
 	}
 
 	permission.ID = result
-
+	permission.Slug, err = model.ToHashID(permission.ID)
+	if err != nil {
+		log.Println(err)
+	}
 	return permission, nil
 }
 
@@ -66,20 +69,13 @@ func (service *accountService) UpdatePermission(permission model.Permission) (mo
 		return model.Permission{}, appError.BadRequest
 	}
 
-	id, err := model.DecodeID(permission.Slug)
+	var err error
+	permission.ID, err = model.DecodeID(permission.Slug)
 	if err != nil {
 		log.Println(err)
 		return model.Permission{}, appError.BadRequest
 	}
 
-	_, err = service.repo.FetchAccountByID(id)
-	if err != nil {
-		log.Println(err)
-		if err == appError.BadRequest {
-			return model.Permission{}, err
-		}
-		return model.Permission{}, appError.ServerError
-	}
 	err = service.repo.UpdatePermission(permission)
 
 	if err != nil {
