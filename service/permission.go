@@ -54,14 +54,23 @@ func (service *accountService) CreatePermission(permission model.Permission) (mo
 }
 
 func (service *accountService) UpdatePermission(permission model.Permission) (model.Permission, error) {
-	if !permission.Valid() {
-		return model.Permission{}, appError.BadRequest
-	}
-
 	var err error
 	permission.ID, err = model.DecodeID(permission.Slug)
 	if err != nil {
 		log.Println(err)
+		return model.Permission{}, appError.BadRequest
+	}
+
+	_, err = service.repo.FetchPermissionByID(permission.ID)
+	if err != nil {
+		log.Println(err)
+		if err == appError.NotFound {
+			return model.Permission{}, appError.NotFound
+		}
+		return model.Permission{}, appError.BadRequest
+	}
+
+	if !permission.Valid() {
 		return model.Permission{}, appError.BadRequest
 	}
 
