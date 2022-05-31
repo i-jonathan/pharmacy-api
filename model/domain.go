@@ -5,14 +5,16 @@ import (
 	"crypto/subtle"
 	"encoding/base64"
 	"fmt"
+	"net/http"
+	"regexp"
+	"strings"
+	"time"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/i-jonathan/pharmacy-api/config"
 	appError "github.com/i-jonathan/pharmacy-api/error"
 	"github.com/speps/go-hashids/v2"
 	"golang.org/x/crypto/argon2"
-	"regexp"
-	"strings"
-	"time"
 )
 
 type passwordConfig struct {
@@ -95,8 +97,8 @@ func DecodeID(slug string) (int, error) {
 
 // Valid returns true if permission is valid
 func (p *Permission) Valid() bool {
-	var models = []string{"account", "order", "return", "category", "product", "supplier"}
-	var allowed = []string{"read", "write", "update", "delete"}
+	var models = []string{"account", "order", "return", "category", "product", "supplier", "role"}
+	var allowed = []string{"read", "create", "update", "delete"}
 	parts := strings.Split(p.Name, ":")
 
 	if stringInSlice(parts[0], models) && stringInSlice(parts[1], allowed) {
@@ -184,9 +186,13 @@ func (a *Account) CreateToken() (string, error) {
 	if err != nil {
 		return "", err
 	}
-
+	var permissions []string
+	for _, permission := range a.Role.Permissions {
+		permissions = append(permissions, permission.Name)
+	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"hash":           hash,
+		"perms":          permissions,
 		"StandardClaims": jwt.StandardClaims{ExpiresAt: time.Now().Add(16 * time.Hour).Unix()},
 	})
 	config2 := config.GetConfig()
@@ -240,4 +246,21 @@ func ParseToken(tokenString string) (map[string]interface{}, error) {
 		return claims, nil
 	}
 	return nil, err
+}
+
+func CheckPermission(perm string, r *http.Request) (bool, error) {
+	token, err := r.Cookie("Authorization")
+	if err != nil {
+		return false, err
+	}
+
+	claims, err := ParseToken(token.Value)
+	perms := claims["perms"].([]string)
+
+	for _, ish := range perms {
+		if ish == perm {
+			return true, nil
+		}
+	}
+	return false, appError.Unauthorized
 }

@@ -12,15 +12,27 @@ func ReturnFailure(w http.ResponseWriter, err error) {
 	case appError.BadRequest:
 		w.WriteHeader(appError.BadRequest.Status)
 		err2 := json.NewEncoder(w).Encode(appError.BadRequest.Response())
-		log.Println(err2)
+		if err2 != nil {
+			log.Println(err2)
+		}
 	case appError.NotFound:
 		w.WriteHeader(appError.NotFound.Status)
 		err2 := json.NewEncoder(w).Encode(appError.NotFound.Response())
-		log.Println(err2)
+		if err2 != nil {
+			log.Println(err2)
+		}
 	case appError.ServerError:
 		w.WriteHeader(appError.ServerError.Status)
 		err2 := json.NewEncoder(w).Encode(appError.ServerError.Response())
-		log.Println(err2)
+		if err2 != nil {
+			log.Println(err2)
+		}
+	case appError.Unauthorized:
+		w.WriteHeader(appError.Unauthorized.Status)
+		err2 := json.NewEncoder(w).Encode(appError.Unauthorized.Response())
+		if err2 != nil {
+			log.Println(err2)
+		}
 	}
 }
 

@@ -1,10 +1,11 @@
 package service
 
 import (
+	"log"
+
 	appError "github.com/i-jonathan/pharmacy-api/error"
 	"github.com/i-jonathan/pharmacy-api/model"
 	"github.com/i-jonathan/pharmacy-api/repository"
-	"log"
 )
 
 type accountService struct {
@@ -57,7 +58,6 @@ func (service *accountService) CreateAccount(account model.Account) (model.Accou
 	if !valid {
 		return model.Account{}, appError.BadRequest
 	}
-
 	result, err := service.repo.CreateAccount(account)
 
 	if err != nil {
@@ -145,6 +145,14 @@ func (service *accountService) SignIn(auth model.Auth) (string, error) {
 	if err != nil || !valid {
 		log.Print(err)
 		return "", appError.Unauthorized
+	}
+
+	if account.RoleID > 0 {
+		account.Role, err = service.repo.FetchRoleByID(account.RoleID)
+		if err != nil {
+			log.Println(err)
+			return "", appError.ServerError
+		}
 	}
 
 	token, err := account.CreateToken()

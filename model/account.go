@@ -11,12 +11,12 @@ type Permission struct {
 }
 
 type Role struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	Description string	`json:"description"`
-	CreatedAt time.Time `json:"created_at"`
-	Permissions []Permission `json:"permissions"`
-	Slug      string    `json:"slug"`
+	ID          int          `json:"id"`
+	Name        string       `json:"name"`
+	Description string       `json:"description"`
+	CreatedAt   time.Time    `json:"created_at"`
+	Permissions []Permission `json:"permissions,omitempty"`
+	Slug        string       `json:"slug"`
 }
 
 type Account struct {

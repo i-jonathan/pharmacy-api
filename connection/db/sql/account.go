@@ -2,9 +2,10 @@ package db
 
 import (
 	"database/sql"
+	"log"
+
 	appError "github.com/i-jonathan/pharmacy-api/error"
 	"github.com/i-jonathan/pharmacy-api/model"
-	"log"
 )
 
 func (r *repo) FetchAccounts() ([]model.Account, error) {
@@ -70,9 +71,9 @@ func (r *repo) FetchAccountByID(id int) (model.Account, error) {
 
 func (r *repo) FetchAccountWithPassword(auth model.Auth) (model.Account, error) {
 	var result model.Account
-	const query = "SELECT id, email, password from account where email=$1;"
+	const query = "SELECT id, email, password, role_id from account where email=$1;"
 
-	err := r.Conn.QueryRow(query, auth.Email).Scan(&result.ID, &result.Email, &result.Password)
+	err := r.Conn.QueryRow(query, auth.Email).Scan(&result.ID, &result.Email, &result.Password, &result.RoleID)
 
 	if err != nil {
 		switch err {
@@ -89,6 +90,7 @@ func (r *repo) FetchAccountWithPassword(auth model.Auth) (model.Account, error) 
 func (r *repo) CreateAccount(account model.Account) (int, error) {
 	var phoneExists bool
 	var emailExists bool
+	// TODO return apperror conflict
 	row := r.Conn.QueryRow("select exists(select 1 from account where phone_number=$1);", account.PhoneNumber)
 	if err := row.Scan(&phoneExists); err != nil {
 		return 0, err
