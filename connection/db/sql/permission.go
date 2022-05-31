@@ -76,7 +76,7 @@ func (r *repo) CreatePermission(permission model.Permission) (int, error) {
 	var id int
 	err := r.Conn.QueryRow(statement, permission.Name, permission.Description).Scan(&id)
 
-	if err != nil || id < 1{
+	if err != nil || id < 1 {
 		return 0, err
 	}
 
