@@ -12,5 +12,8 @@ func InitPermissionRouter(svc service.PermissionUseCase) {
 	permissionRouter := router.PathPrefix("/permissions").Subrouter()
 
 	permissionRouter.HandleFunc("", permissionController.FetchPermissions).Methods(http.MethodGet)
+	permissionRouter.HandleFunc("", permissionController.CreatePermission).Methods(http.MethodPost)
 	permissionRouter.HandleFunc("/{slug}", permissionController.FetchPermissionBySlug).Methods(http.MethodGet)
+	permissionRouter.HandleFunc("/{slug}", permissionController.UpdatePermission).Methods(http.MethodPut)
+	permissionRouter.HandleFunc("/{slug}", permissionController.DeletePermission).Methods(http.MethodDelete)
 }

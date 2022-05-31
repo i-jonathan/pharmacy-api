@@ -1,10 +1,11 @@
 package service
 
 import (
+	"log"
+
 	appError "github.com/i-jonathan/pharmacy-api/error"
 	"github.com/i-jonathan/pharmacy-api/model"
 	"github.com/i-jonathan/pharmacy-api/repository"
-	"log"
 )
 
 type accountService struct {
@@ -13,69 +14,6 @@ type accountService struct {
 
 func NewAccountService(r repository.PharmacyRepository) *accountService {
 	return &accountService{r}
-}
-
-// Permissions
-
-func (service *accountService) FetchPermissions() ([]model.Permission, error) {
-	result, err := service.repo.FetchPermissions()
-	if err != nil {
-		return nil, appError.ServerError
-	}
-
-	return result, nil
-}
-
-func (service *accountService) FetchPermissionBySlug(slug string) (model.Permission, error) {
-	id, err := model.DecodeID(slug)
-
-	if err != nil {
-		return model.Permission{}, appError.BadRequest
-	}
-
-	result, err := service.repo.FetchPermissionByID(id)
-	if err != nil {
-		if err == appError.NotFound {
-			return model.Permission{}, err
-		}
-		return model.Permission{}, appError.ServerError
-	}
-
-	return result, nil
-}
-
-func (service *accountService) CreatePermission(permission model.Permission) (model.Permission, error) {
-	panic("implement me")
-}
-
-func (service *accountService) UpdatePermission(permission model.Permission) (model.Permission, error) {
-	panic("implement me")
-}
-
-func (service *accountService) DeletePermission(slug string) error {
-	panic("implement me")
-}
-
-// Roles
-
-func (service *accountService) FetchRoles() ([]model.Role, error) {
-	panic("implement me")
-}
-
-func (service *accountService) FetchRoleBySlug(slug string) (model.Role, error) {
-	panic("implement me")
-}
-
-func (service *accountService) CreateRole(role model.Role) (model.Role, error) {
-	panic("implement me")
-}
-
-func (service *accountService) UpdateRole(role model.Role) error {
-	panic("implement me")
-}
-
-func (service *accountService) DeleteRole(slug string) error {
-	panic("implement me")
 }
 
 // Accounts
@@ -120,7 +58,6 @@ func (service *accountService) CreateAccount(account model.Account) (model.Accou
 	if !valid {
 		return model.Account{}, appError.BadRequest
 	}
-
 	result, err := service.repo.CreateAccount(account)
 
 	if err != nil {
@@ -208,6 +145,14 @@ func (service *accountService) SignIn(auth model.Auth) (string, error) {
 	if err != nil || !valid {
 		log.Print(err)
 		return "", appError.Unauthorized
+	}
+
+	if account.RoleID > 0 {
+		account.Role, err = service.repo.FetchRoleByID(account.RoleID)
+		if err != nil {
+			log.Println(err)
+			return "", appError.ServerError
+		}
 	}
 
 	token, err := account.CreateToken()

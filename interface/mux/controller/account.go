@@ -2,13 +2,14 @@ package controller
 
 import (
 	"encoding/json"
+	"log"
+	"net/http"
+
 	"github.com/gorilla/mux"
 	appError "github.com/i-jonathan/pharmacy-api/error"
 	"github.com/i-jonathan/pharmacy-api/interface/mux/helper"
 	"github.com/i-jonathan/pharmacy-api/model"
 	"github.com/i-jonathan/pharmacy-api/service"
-	"log"
-	"net/http"
 )
 
 type accountController struct {
@@ -20,6 +21,14 @@ func NewAccountController(s service.AccountUseCase) *accountController {
 }
 
 func (controller *accountController) FetchAccounts(w http.ResponseWriter, r *http.Request) {
+	const perm = "account:read"
+	allowed, err := model.CheckPermission(perm, r)
+	if !allowed {
+		log.Println(err)
+		helper.ReturnFailure(w, appError.Unauthorized)
+		return
+	}
+
 	result, err := controller.svc.FetchAccounts()
 	if err != nil {
 		helper.ReturnFailure(w, err)
@@ -30,6 +39,14 @@ func (controller *accountController) FetchAccounts(w http.ResponseWriter, r *htt
 }
 
 func (controller *accountController) FetchAccountBySlug(w http.ResponseWriter, r *http.Request) {
+	const perm = "account:read"
+	allowed, err := model.CheckPermission(perm, r)
+	if !allowed {
+		log.Println(err)
+		helper.ReturnFailure(w, appError.Unauthorized)
+		return
+	}
+
 	slug := mux.Vars(r)["slug"]
 
 	result, err := controller.svc.FetchAccountBySlug(slug)
@@ -45,7 +62,7 @@ func (controller *accountController) CreateAccount(w http.ResponseWriter, r *htt
 	err := json.NewDecoder(r.Body).Decode(&account)
 	if err != nil {
 		log.Println(err)
-		helper.ReturnFailure(w, appError.ServerError)
+		helper.ReturnFailure(w, appError.BadRequest)
 		return
 	}
 
@@ -78,15 +95,22 @@ func (controller *accountController) UpdateAccount(w http.ResponseWriter, r *htt
 }
 
 func (controller *accountController) DeleteAccount(w http.ResponseWriter, r *http.Request) {
+	const perm = "account:delete"
+	allowed, err := model.CheckPermission(perm, r)
+	if !allowed {
+		log.Println(err)
+		helper.ReturnFailure(w, appError.Unauthorized)
+		return
+	}
 	slug := mux.Vars(r)["slug"]
 
-	err := controller.svc.DeleteAccount(slug)
+	err = controller.svc.DeleteAccount(slug)
 	if err != nil {
 		helper.ReturnFailure(w, err)
 		return
 	}
 
-	helper.ReturnDelete(w)
+	helper.ReturnEmptyBody(w, http.StatusNoContent)
 }
 
 func (controller *accountController) Login(w http.ResponseWriter, r *http.Request) {
@@ -105,5 +129,12 @@ func (controller *accountController) Login(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	helper.ReturnSuccess(w, map[string]string{"Token": token})
+	http.SetCookie(w, &http.Cookie{
+		Name:     "Authorization",
+		Value:    token,
+		MaxAge:   57600,
+		HttpOnly: true,
+	})
+
+	helper.ReturnSuccess(w, struct{ Token string }{token})
 }

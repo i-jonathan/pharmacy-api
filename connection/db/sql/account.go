@@ -2,127 +2,11 @@ package db
 
 import (
 	"database/sql"
+	"log"
+
 	appError "github.com/i-jonathan/pharmacy-api/error"
 	"github.com/i-jonathan/pharmacy-api/model"
-	"log"
 )
-
-func (r *repo) FetchPermissions() ([]model.Permission, error) {
-	var result []model.Permission
-
-	query := "SELECT id, name, description, created_at FROM permission;"
-
-	rows, err := r.Conn.Query(query)
-
-	if err != nil {
-		return nil, err
-	}
-	defer func(rows *sql.Rows) {
-		err := rows.Close()
-		if err != nil {
-			log.Println(err)
-		}
-	}(rows)
-
-	for rows.Next() {
-		var perm model.Permission
-		if err := rows.Scan(&perm.ID, &perm.Name, &perm.Description, &perm.CreatedAt); err != nil {
-			return nil, appError.ServerError
-		}
-		perm.Slug, err = model.ToHashID(perm.ID)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		result = append(result, perm)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, appError.ServerError
-	}
-
-	return result, nil
-}
-
-func (r *repo) FetchPermissionByID(id int) (model.Permission, error) {
-	var result model.Permission
-
-	query := "SELECT id, name, description, created_at FROM permission WHERE id = ?;"
-	row := r.Conn.QueryRow(query, id)
-
-	if err := row.Err(); err != nil {
-		return model.Permission{}, err
-	}
-
-	err := row.Scan(&result.ID, &result.Name, &result.Description, &result.CreatedAt)
-	if err != nil {
-		switch err {
-		case sql.ErrNoRows:
-			return model.Permission{}, appError.NotFound
-		default:
-			return model.Permission{}, err
-		}
-	}
-	return result, nil
-}
-
-func (r *repo) CreatePermission(permission model.Permission) (int, error) {
-	statement := "INSERT INTO permission (name, description) VALUES ?, ?;"
-	resp, err := r.Conn.Exec(statement, permission.Name, permission.Description)
-
-	if err != nil {
-		return 0, err
-	}
-
-	id, err := resp.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
-	return int(id), nil
-}
-
-func (r *repo) UpdatePermission(permission model.Permission) error {
-	statement := "UPDATE permission SET name = ?, description = ? WHERE id = ?;"
-
-	_, err := r.Conn.Exec(statement, permission.Name, permission.Description, permission.ID)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (r *repo) DeletePermission(id int) error {
-	statement := "DELETE FROM permission WHERE id = ?;"
-
-	_, err := r.Conn.Exec(statement, id)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (r *repo) FetchRoles() ([]model.Role, error) {
-	panic("implement me")
-}
-
-func (r *repo) FetchRoleByID(id int) (model.Role, error) {
-	panic("implement me")
-}
-
-func (r *repo) CreateRole(role model.Role) (int, error) {
-	panic("implement me")
-}
-
-func (r *repo) UpdateRole(role model.Role) error {
-	panic("implement me")
-}
-
-func (r *repo) DeleteRole(id int) error {
-	panic("implement me")
-}
 
 func (r *repo) FetchAccounts() ([]model.Account, error) {
 	var result []model.Account
@@ -187,9 +71,9 @@ func (r *repo) FetchAccountByID(id int) (model.Account, error) {
 
 func (r *repo) FetchAccountWithPassword(auth model.Auth) (model.Account, error) {
 	var result model.Account
-	const query = "SELECT id, email, password from account where email=$1;"
+	const query = "SELECT id, email, password, role_id from account where email=$1;"
 
-	err := r.Conn.QueryRow(query, auth.Email).Scan(&result.ID, &result.Email, &result.Password)
+	err := r.Conn.QueryRow(query, auth.Email).Scan(&result.ID, &result.Email, &result.Password, &result.RoleID)
 
 	if err != nil {
 		switch err {
@@ -206,6 +90,7 @@ func (r *repo) FetchAccountWithPassword(auth model.Auth) (model.Account, error) 
 func (r *repo) CreateAccount(account model.Account) (int, error) {
 	var phoneExists bool
 	var emailExists bool
+	// TODO return apperror conflict
 	row := r.Conn.QueryRow("select exists(select 1 from account where phone_number=$1);", account.PhoneNumber)
 	if err := row.Scan(&phoneExists); err != nil {
 		return 0, err
