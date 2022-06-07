@@ -35,7 +35,7 @@ func (r *repo) FetchCategories() ([]model.Category, error) {
 			log.Println(err)
 			continue
 		}
-		temp.Slug, err = model.ToHashID(temp.ID)
+		temp.Slug, err = model.EncodeIDToSlug(temp.ID)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -70,7 +70,7 @@ func (r *repo) FetchCategoryByID(id int) (model.Category, error) {
 		}
 	}
 
-	category.Slug, err = model.ToHashID(category.ID)
+	category.Slug, err = model.EncodeIDToSlug(category.ID)
 	if err != nil {
 		log.Println(err)
 	}

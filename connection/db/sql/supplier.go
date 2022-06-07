@@ -35,7 +35,7 @@ func (r *repo) FetchSuppliers() ([]model.Supplier, error) {
 			log.Println(err)
 			continue
 		}
-		temp.Slug, err = model.ToHashID(temp.ID)
+		temp.Slug, err = model.EncodeIDToSlug(temp.ID)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -68,7 +68,7 @@ func (r *repo) FetchSupplierByID(id int) (model.Supplier, error) {
 		}
 	}
 
-	result.Slug, err = model.ToHashID(result.ID)
+	result.Slug, err = model.EncodeIDToSlug(result.ID)
 	if err != nil {
 		log.Println(err)
 	}

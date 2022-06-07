@@ -16,7 +16,7 @@ func (service *accountService) FetchPermissions() ([]model.Permission, error) {
 }
 
 func (service *accountService) FetchPermissionBySlug(slug string) (model.Permission, error) {
-	id, err := model.DecodeID(slug)
+	id, err := model.DecodeSlugToID(slug)
 
 	if err != nil {
 		return model.Permission{}, appError.BadRequest
@@ -46,7 +46,7 @@ func (service *accountService) CreatePermission(permission model.Permission) (mo
 	}
 
 	permission.ID = result
-	permission.Slug, err = model.ToHashID(permission.ID)
+	permission.Slug, err = model.EncodeIDToSlug(permission.ID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -55,7 +55,7 @@ func (service *accountService) CreatePermission(permission model.Permission) (mo
 
 func (service *accountService) UpdatePermission(permission model.Permission) (model.Permission, error) {
 	var err error
-	permission.ID, err = model.DecodeID(permission.Slug)
+	permission.ID, err = model.DecodeSlugToID(permission.Slug)
 	if err != nil {
 		log.Println(err)
 		return model.Permission{}, appError.BadRequest
@@ -85,7 +85,7 @@ func (service *accountService) UpdatePermission(permission model.Permission) (mo
 }
 
 func (service *accountService) DeletePermission(slug string) error {
-	id, err := model.DecodeID(slug)
+	id, err := model.DecodeSlugToID(slug)
 	if err != nil {
 		log.Println(err)
 		return appError.BadRequest

@@ -24,9 +24,9 @@ func (r *repo) FetchAccounts() ([]model.Account, error) {
 			log.Println(err)
 			continue
 		}
-		temp.Slug, _ = model.ToHashID(temp.ID)
+		temp.Slug, _ = model.EncodeIDToSlug(temp.ID)
 		temp.Role.ID = temp.RoleID
-		temp.Role.Slug, err = model.ToHashID(temp.RoleID)
+		temp.Role.Slug, err = model.EncodeIDToSlug(temp.RoleID)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -61,8 +61,8 @@ func (r *repo) FetchAccountByID(id int) (model.Account, error) {
 			return model.Account{}, err
 		}
 	}
-	result.Slug, _ = model.ToHashID(result.ID)
-	result.Role.Slug, err = model.ToHashID(result.RoleID)
+	result.Slug, _ = model.EncodeIDToSlug(result.ID)
+	result.Role.Slug, err = model.EncodeIDToSlug(result.RoleID)
 	if err != nil {
 		log.Println(err)
 	}

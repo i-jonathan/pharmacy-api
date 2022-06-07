@@ -17,7 +17,7 @@ func (service *accountService) FetchRoles() ([]model.Role, error) {
 }
 
 func (service *accountService) FetchRoleBySlug(slug string) (model.Role, error) {
-	id, err := model.DecodeID(slug)
+	id, err := model.DecodeSlugToID(slug)
 	if err != nil {
 		log.Println(err)
 		return model.Role{}, appError.BadRequest
@@ -46,7 +46,7 @@ func (service *accountService) CreateRole(role model.Role) (model.Role, error) {
 	}
 
 	role.ID = result
-	role.Slug, err = model.ToHashID(result)
+	role.Slug, err = model.EncodeIDToSlug(result)
 	if err != nil {
 		log.Println(err)
 	}
@@ -56,7 +56,7 @@ func (service *accountService) CreateRole(role model.Role) (model.Role, error) {
 
 func (service *accountService) UpdateRole(role model.Role) error {
 	var err error
-	role.ID, err = model.DecodeID(role.Slug)
+	role.ID, err = model.DecodeSlugToID(role.Slug)
 	if err != nil {
 		log.Println(err)
 		return appError.BadRequest
@@ -83,7 +83,7 @@ func (service *accountService) UpdateRole(role model.Role) error {
 }
 
 func (service *accountService) DeleteRole(slug string) error {
-	id, err := model.DecodeID(slug)
+	id, err := model.DecodeSlugToID(slug)
 	if err != nil {
 		log.Println(err)
 		return appError.BadRequest

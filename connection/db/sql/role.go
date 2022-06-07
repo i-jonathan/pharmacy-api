@@ -26,7 +26,7 @@ func (r *repo) FetchRoles() ([]model.Role, error) {
 			log.Println(err)
 			continue
 		}
-		temp.Slug, err = model.ToHashID(temp.ID)
+		temp.Slug, err = model.EncodeIDToSlug(temp.ID)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -59,7 +59,7 @@ func (r *repo) FetchRoleByID(id int) (model.Role, error) {
 		}
 		return model.Role{}, err
 	}
-	result.Slug, err = model.ToHashID(result.ID)
+	result.Slug, err = model.EncodeIDToSlug(result.ID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -81,7 +81,7 @@ func (r *repo) FetchRoleByID(id int) (model.Role, error) {
 			continue
 		}
 
-		tempPerm.Slug, err = model.ToHashID(tempPerm.ID)
+		tempPerm.Slug, err = model.EncodeIDToSlug(tempPerm.ID)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -112,7 +112,7 @@ func (r *repo) CreateRole(role model.Role) (int, error) {
 		values := make([]interface{}, 0, len(role.Permissions)*2)
 		i := 0
 		for _, permission := range role.Permissions {
-			permission.ID, err = model.DecodeID(permission.Slug)
+			permission.ID, err = model.DecodeSlugToID(permission.Slug)
 			if err != nil {
 				log.Println(err)
 				continue
