@@ -33,6 +33,12 @@ func ReturnFailure(w http.ResponseWriter, err error) {
 		if err2 != nil {
 			log.Println(err2)
 		}
+	case appError.Forbidden:
+		w.WriteHeader(appError.Forbidden.Status)
+		err2 := json.NewEncoder(w).Encode(appError.Forbidden.Response())
+		if err2 != nil {
+			log.Println(err2)
+		}
 	}
 }
 
@@ -59,5 +65,5 @@ func ReturnSuccess(w http.ResponseWriter, data interface{}) {
 
 func ReturnEmptyBody(w http.ResponseWriter, code int) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(code)
 }
