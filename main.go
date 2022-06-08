@@ -34,6 +34,9 @@ func main() {
 	authService := service.NewAuthService(noSqlRepo)
 	router.InitAuthRouter(authService)
 
+	inventoryService := service.NewInventoryService(repo)
+	router.InitInventoryRouter(inventoryService)
+
 	log.Println("Starting Server...")
 	if err := http.ListenAndServe(":9576", handlers.CORS(handlers.AllowedOrigins([]string{"localhost:7060"}), handlers.AllowCredentials(), handlers.OptionStatusCode(http.StatusOK))(mainRouter)); err != nil {
 		log.Panicln(err)

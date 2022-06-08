@@ -58,6 +58,12 @@ type ProductUseCase interface {
 	DeleteProduct(string) error
 }
 
+type InventoryUseCase interface {
+	CategoryUseCase
+	ProductUseCase
+	SupplierUseCase
+}
+
 // sales management repositories
 
 type PaymentMethodUseCase interface {
