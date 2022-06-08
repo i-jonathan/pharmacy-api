@@ -1,15 +1,11 @@
 package model
 
-import "time"
-
 type PaymentMethod struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	IsActive  bool      `json:"is_active"`
-	CreatedBy Account   `json:"created_by"`
-	UserID    int       `json:"user_id"`
-	CreatedAt time.Time `json:"created_at"`
-	Slug      string    `json:"slug"`
+	baseModel
+	Name      string  `json:"name"`
+	IsActive  bool    `json:"is_active"`
+	CreatedBy Account `json:"created_by"`
+	UserID    int     `json:"user_id"`
 }
 
 type OrderItem struct {
@@ -22,8 +18,8 @@ type OrderItem struct {
 }
 
 type Order struct {
+	baseModel
 	// TODO change price to decimal
-	ID              int           `json:"id"`
 	OrderItem       []OrderItem   `json:"order_item"`
 	TotalPrice      int           `json:"total_price"`
 	PaymentMethod   PaymentMethod `json:"payment_method"`
@@ -33,17 +29,14 @@ type Order struct {
 	CashierID       int           `json:"cashier_id"`
 	AmountTendered  int           `json:"amount_tendered"`
 	Change          int           `json:"change"`
-	CreatedAt       time.Time     `json:"created_at"`
 }
 
 type Return struct {
-	ID        int         `json:"id"`
+	baseModel
 	Reason    string      `json:"reason"`
 	Item      []OrderItem `json:"item"`
 	Order     Order       `json:"order"`
 	OrderID   int         `json:"order_id"`
 	CreatedBy Account     `json:"created_by"`
 	UserID    int         `json:"user_id"`
-	CreatedAt time.Time   `json:"created_at"`
-	Slug      string      `json:"slug"`
 }

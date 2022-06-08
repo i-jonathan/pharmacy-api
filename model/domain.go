@@ -17,6 +17,12 @@ import (
 	"golang.org/x/crypto/argon2"
 )
 
+type baseModel struct {
+	ID        int       `json:"id"`
+	Slug      string    `json:"slug"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type passwordConfig struct {
 	time    uint32
 	memory  uint32

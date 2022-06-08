@@ -3,28 +3,24 @@ package model
 import "time"
 
 type Category struct {
-	ID          int       `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	CreatedAt   time.Time `json:"created_at"`
-	CreatedBy   Account   `json:"created_by"`
-	UserID      int       `json:"user_id"`
-	Slug        string    `json:"slug"`
+	baseModel
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	CreatedBy   Account `json:"created_by"`
+	UserID      int     `json:"user_id"`
 }
 
 type Supplier struct {
-	ID          int       `json:"id"`
-	Name        string    `json:"name"`
-	Address     string    `json:"address"`
-	PhoneNumber string    `json:"phone_number"`
-	Email       string    `json:"email"`
-	CreatedAt   time.Time `json:"created_at"`
-	Slug        string    `json:"slug"`
+	baseModel
+	Name        string `json:"name"`
+	Address     string `json:"address"`
+	PhoneNumber string `json:"phone_number"`
+	Email       string `json:"email"`
 }
 
 type Product struct {
 	// TODO change price to decimal
-	ID                int        `json:"id"`
+	baseModel
 	Name              string     `json:"name"`
 	BarCode           string     `json:"bar_code"`
 	Description       string     `json:"description"`
@@ -42,6 +38,4 @@ type Product struct {
 	Supplier          []Supplier `json:"supplier"`
 	CreatedBy         Account    `json:"created_by"`
 	UserID            int        `json:"user_id"`
-	CreatedAt         time.Time  `json:"created_at"`
-	Slug              string     `json:"slug"`
 }
