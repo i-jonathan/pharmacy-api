@@ -17,6 +17,12 @@ import (
 	"golang.org/x/crypto/argon2"
 )
 
+type baseModel struct {
+	ID        int       `json:"id"`
+	Slug      string    `json:"slug"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type passwordConfig struct {
 	time    uint32
 	memory  uint32
@@ -52,8 +58,8 @@ func integerValidation(list []int) bool {
 	return true
 }
 
-//ToHashID converts id to hash ID
-func ToHashID(id int) (string, error) {
+//EncodeIDToSlug converts id to hash ID
+func EncodeIDToSlug(id int) (string, error) {
 	if id < 1 {
 		return "", nil
 	}
@@ -75,8 +81,8 @@ func ToHashID(id int) (string, error) {
 	return slug, nil
 }
 
-//DecodeID converts slug to integer ID
-func DecodeID(slug string) (int, error) {
+//DecodeSlugToID converts slug to integer ID
+func DecodeSlugToID(slug string) (int, error) {
 	hashData := hashids.NewData()
 
 	config2 := config.GetConfig()
@@ -115,7 +121,7 @@ func (r *Role) Valid() bool {
 func (a *Account) Valid() bool {
 	toCheck := []string{a.FirstName, a.LastName, a.Password, a.PhoneNumber}
 
-	re := regexp.MustCompile("^.+@.+\\..+$")
+	re := regexp.MustCompile(`^.+@.+\\..+$`)
 	validity := re.MatchString(a.Email)
 
 	if !validity {
@@ -182,7 +188,7 @@ func (o *Order) Valid() bool {
 }
 
 func (a *Account) CreateToken() (string, error) {
-	hash, err := ToHashID(a.ID)
+	hash, err := EncodeIDToSlug(a.ID)
 	if err != nil {
 		return "", err
 	}

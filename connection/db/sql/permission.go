@@ -29,7 +29,7 @@ func (r *repo) FetchPermissions() ([]model.Permission, error) {
 		if err := rows.Scan(&perm.ID, &perm.Name, &perm.Description, &perm.CreatedAt); err != nil {
 			return nil, appError.ServerError
 		}
-		perm.Slug, err = model.ToHashID(perm.ID)
+		perm.Slug, err = model.EncodeIDToSlug(perm.ID)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -63,7 +63,7 @@ func (r *repo) FetchPermissionByID(id int) (model.Permission, error) {
 			return model.Permission{}, err
 		}
 	}
-	result.Slug, err = model.ToHashID(result.ID)
+	result.Slug, err = model.EncodeIDToSlug(result.ID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -76,7 +76,7 @@ func (r *repo) CreatePermission(permission model.Permission) (int, error) {
 	var id int
 	err := r.Conn.QueryRow(statement, permission.Name, permission.Description).Scan(&id)
 
-	if err != nil || id < 1{
+	if err != nil || id < 1 {
 		return 0, err
 	}
 

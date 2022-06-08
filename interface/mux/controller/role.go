@@ -19,7 +19,7 @@ func NewRoleController(s service.RoleUseCase) *roleController {
 	return &roleController{s}
 }
 
-func (controller *roleController) FetchRoles(w http.ResponseWriter, r *http.Request) {
+func (controller *roleController) FetchRoles(w http.ResponseWriter, _ *http.Request) {
 	result, err := controller.svc.FetchRoles()
 	if err != nil {
 		helper.ReturnFailure(w, err)

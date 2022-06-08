@@ -28,7 +28,7 @@ func (service *accountService) FetchAccounts() ([]model.Account, error) {
 }
 
 func (service *accountService) FetchAccountBySlug(slug string) (model.Account, error) {
-	id, err := model.DecodeID(slug)
+	id, err := model.DecodeSlugToID(slug)
 	if err != nil {
 		log.Println(err)
 		return model.Account{}, appError.BadRequest
@@ -68,7 +68,7 @@ func (service *accountService) CreateAccount(account model.Account) (model.Accou
 		return model.Account{}, appError.ServerError
 	}
 	account.ID = result
-	account.Slug, err = model.ToHashID(account.ID)
+	account.Slug, err = model.EncodeIDToSlug(account.ID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -77,7 +77,7 @@ func (service *accountService) CreateAccount(account model.Account) (model.Accou
 }
 
 func (service *accountService) UpdateAccount(account model.Account) (model.Account, error) {
-	id, err := model.DecodeID(account.Slug)
+	id, err := model.DecodeSlugToID(account.Slug)
 	if err != nil {
 		log.Println(err)
 		return model.Account{}, appError.BadRequest
@@ -109,7 +109,7 @@ func (service *accountService) UpdateAccount(account model.Account) (model.Accou
 }
 
 func (service *accountService) DeleteAccount(s string) error {
-	id, err := model.DecodeID(s)
+	id, err := model.DecodeSlugToID(s)
 	if err != nil {
 		return appError.BadRequest
 	}
