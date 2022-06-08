@@ -261,6 +261,9 @@ func CheckPermission(perm string, r *http.Request) (bool, error) {
 	}
 
 	claims, err := ParseToken(token.Value)
+	if err != nil {
+		return false, err
+	}
 	perms := claims["perms"].([]string)
 
 	for _, ish := range perms {
@@ -268,5 +271,5 @@ func CheckPermission(perm string, r *http.Request) (bool, error) {
 			return true, nil
 		}
 	}
-	return false, appError.Unauthorized
+	return false, appError.Forbidden
 }
